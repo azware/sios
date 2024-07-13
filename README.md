@@ -66,7 +66,7 @@ Sistem Informasi Operasional Sekolah (**SIOS**) **SMART** adalah solusi digital 
    - **Kegiatan Ekstrakurikuler**: Pengelolaan kegiatan ekstrakurikuler yang efisien meningkatkan partisipasi siswa.
    - **Acara Sekolah**: Memudahkan perencanaan dan pelaksanaan acara sekolah.
 
-### 13. **Manajemen Asrama (jika ada)**
+### 13. **Manajemen Asrama**
    - **Pendaftaran dan Penerimaan Asrama**: Memudahkan administrasi dan pengelolaan siswa asrama.
    - **Pengelolaan Kamar Asrama**: Alokasi kamar yang efisien dan terorganisir.
    - **Kehadiran dan Kepulangan**: Memantau kehadiran dan kepulangan siswa asrama dengan akurat.
