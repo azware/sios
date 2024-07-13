@@ -52,32 +52,32 @@ Sistem Informasi Operasional Sekolah (**SIOS**) **SMART** adalah solusi digital 
    - **Kegiatan Alumni**: Memudahkan perencanaan dan pencatatan kegiatan alumni.
 
 ### 10. **Pelaporan dan Analitik**
-    - **Laporan Akademik**: Laporan otomatis memudahkan pemantauan dan evaluasi performa akademik siswa.
-    - **Laporan Keuangan**: Laporan keuangan yang jelas meningkatkan transparansi dan akuntabilitas.
-    - **Analitik Data**: Analisis data yang mendalam membantu pengambilan keputusan yang lebih baik.
-    - **Dashboard Interaktif**: Menampilkan informasi penting secara real-time untuk pengawasan dan pengambilan keputusan cepat.
+   - **Laporan Akademik**: Laporan otomatis memudahkan pemantauan dan evaluasi performa akademik siswa.
+   - **Laporan Keuangan**: Laporan keuangan yang jelas meningkatkan transparansi dan akuntabilitas.
+   - **Analitik Data**: Analisis data yang mendalam membantu pengambilan keputusan yang lebih baik.
+   - **Dashboard Interaktif**: Menampilkan informasi penting secara real-time untuk pengawasan dan pengambilan keputusan cepat.
 
 ### 11. **Administrasi**
-    - **Manajemen Pengguna**: Kontrol akses yang terstruktur meningkatkan keamanan dan manajemen akun pengguna.
-    - **Pengaturan Sistem**: Konfigurasi yang fleksibel memungkinkan penyesuaian sesuai kebutuhan sekolah.
-    - **Backup dan Recovery**: Sistem backup yang handal melindungi data dari kehilangan atau kerusakan.
+   - **Manajemen Pengguna**: Kontrol akses yang terstruktur meningkatkan keamanan dan manajemen akun pengguna.
+   - **Pengaturan Sistem**: Konfigurasi yang fleksibel memungkinkan penyesuaian sesuai kebutuhan sekolah.
+   - **Backup dan Recovery**: Sistem backup yang handal melindungi data dari kehilangan atau kerusakan.
 
 ### 12. **Manajemen Kegiatan**
-    - **Kegiatan Ekstrakurikuler**: Pengelolaan kegiatan ekstrakurikuler yang efisien meningkatkan partisipasi siswa.
-    - **Acara Sekolah**: Memudahkan perencanaan dan pelaksanaan acara sekolah.
+   - **Kegiatan Ekstrakurikuler**: Pengelolaan kegiatan ekstrakurikuler yang efisien meningkatkan partisipasi siswa.
+   - **Acara Sekolah**: Memudahkan perencanaan dan pelaksanaan acara sekolah.
 
 ### 13. **Manajemen Asrama (jika ada)**
-    - **Pendaftaran dan Penerimaan Asrama**: Memudahkan administrasi dan pengelolaan siswa asrama.
-    - **Pengelolaan Kamar Asrama**: Alokasi kamar yang efisien dan terorganisir.
-    - **Kehadiran dan Kepulangan**: Memantau kehadiran dan kepulangan siswa asrama dengan akurat.
+   - **Pendaftaran dan Penerimaan Asrama**: Memudahkan administrasi dan pengelolaan siswa asrama.
+   - **Pengelolaan Kamar Asrama**: Alokasi kamar yang efisien dan terorganisir.
+   - **Kehadiran dan Kepulangan**: Memantau kehadiran dan kepulangan siswa asrama dengan akurat.
 
 ### 14. **Manajemen Kesehatan**
-    - **Data Kesehatan Siswa**: Rekam medis siswa yang terstruktur membantu dalam penanganan kesehatan.
-    - **Klinik Sekolah**: Pengelolaan layanan klinik yang efisien mendukung kesehatan siswa.
+   - **Data Kesehatan Siswa**: Rekam medis siswa yang terstruktur membantu dalam penanganan kesehatan.
+   - **Klinik Sekolah**: Pengelolaan layanan klinik yang efisien mendukung kesehatan siswa.
 
 ### 15. **Manajemen Transportasi**
-    - **Rute Bus Sekolah**: Pengelolaan rute dan jadwal bus yang teratur memastikan ketepatan waktu.
-    - **Data Pengguna Transportasi**: Mencatat pengguna transportasi sekolah untuk pengawasan yang lebih baik.
+   - **Rute Bus Sekolah**: Pengelolaan rute dan jadwal bus yang teratur memastikan ketepatan waktu.
+   - **Data Pengguna Transportasi**: Mencatat pengguna transportasi sekolah untuk pengawasan yang lebih baik.
 
 
 **Keunggulan SIOS Smart:**
@@ -93,7 +93,7 @@ Dengan **SIOS Smart**, sekolah Anda akan merasakan transformasi digital yang mem
 -----------------------------------------------------------------------------------------------
 
 
-# CodeIgniter 4 Framework
+# Framework yang digunakan (CodeIgniter 4 Framework)
 
 ## What is CodeIgniter?
 
