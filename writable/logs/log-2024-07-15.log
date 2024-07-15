@@ -1,0 +1,129 @@
+ERROR - 2024-07-15 14:04:05 --> Error connecting to the database: mysqli_sql_exception: No such file or directory in /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php:186
+Stack trace:
+#0 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php(186): mysqli->real_connect('localhost', '', Object(SensitiveParameterValue), '', 3306, '', 0)
+#1 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#2 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+#3 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(1485): CodeIgniter\Database\BaseConnection->query('SHOW TABLES FRO...')
+#4 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(1505): CodeIgniter\Database\BaseConnection->listTables()
+#5 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MigrationRunner.php(759): CodeIgniter\Database\BaseConnection->tableExists('migrations')
+#6 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MigrationRunner.php(163): CodeIgniter\Database\MigrationRunner->ensureTable()
+#7 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Commands/Database/Migrate.php(85): CodeIgniter\Database\MigrationRunner->latest(NULL)
+#8 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CLI/Commands.php(70): CodeIgniter\Commands\Database\Migrate->run(Array)
+#9 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CLI/Console.php(48): CodeIgniter\CLI\Commands->run('migrate', Array)
+#10 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(351): CodeIgniter\CLI\Console->run()
+#11 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(104): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+#12 /Applications/XAMPP/xamppfiles/htdocs/sios/spark(84): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+#13 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: No such file or directory in /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php:231
+Stack trace:
+#0 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#1 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+#2 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(1485): CodeIgniter\Database\BaseConnection->query('SHOW TABLES FRO...')
+#3 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(1505): CodeIgniter\Database\BaseConnection->listTables()
+#4 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MigrationRunner.php(759): CodeIgniter\Database\BaseConnection->tableExists('migrations')
+#5 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MigrationRunner.php(163): CodeIgniter\Database\MigrationRunner->ensureTable()
+#6 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Commands/Database/Migrate.php(85): CodeIgniter\Database\MigrationRunner->latest(NULL)
+#7 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CLI/Commands.php(70): CodeIgniter\Commands\Database\Migrate->run(Array)
+#8 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CLI/Console.php(48): CodeIgniter\CLI\Commands->run('migrate', Array)
+#9 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(351): CodeIgniter\CLI\Console->run()
+#10 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(104): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+#11 /Applications/XAMPP/xamppfiles/htdocs/sios/spark(84): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+#12 {main}
+ERROR - 2024-07-15 14:49:25 --> Error connecting to the database: mysqli_sql_exception: No such file or directory in /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php:186
+Stack trace:
+#0 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php(186): mysqli->real_connect('localhost', 'root', Object(SensitiveParameterValue), 'azware_sios', 3306, '', 0)
+#1 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#2 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+#3 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(1485): CodeIgniter\Database\BaseConnection->query('SHOW TABLES FRO...')
+#4 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(1505): CodeIgniter\Database\BaseConnection->listTables()
+#5 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MigrationRunner.php(759): CodeIgniter\Database\BaseConnection->tableExists('migrations')
+#6 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MigrationRunner.php(163): CodeIgniter\Database\MigrationRunner->ensureTable()
+#7 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Commands/Database/Migrate.php(85): CodeIgniter\Database\MigrationRunner->latest(NULL)
+#8 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CLI/Commands.php(70): CodeIgniter\Commands\Database\Migrate->run(Array)
+#9 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CLI/Console.php(48): CodeIgniter\CLI\Commands->run('migrate', Array)
+#10 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(351): CodeIgniter\CLI\Console->run()
+#11 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(104): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+#12 /Applications/XAMPP/xamppfiles/htdocs/sios/spark(84): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+#13 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: No such file or directory in /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php:231
+Stack trace:
+#0 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#1 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+#2 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(1485): CodeIgniter\Database\BaseConnection->query('SHOW TABLES FRO...')
+#3 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(1505): CodeIgniter\Database\BaseConnection->listTables()
+#4 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MigrationRunner.php(759): CodeIgniter\Database\BaseConnection->tableExists('migrations')
+#5 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MigrationRunner.php(163): CodeIgniter\Database\MigrationRunner->ensureTable()
+#6 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Commands/Database/Migrate.php(85): CodeIgniter\Database\MigrationRunner->latest(NULL)
+#7 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CLI/Commands.php(70): CodeIgniter\Commands\Database\Migrate->run(Array)
+#8 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CLI/Console.php(48): CodeIgniter\CLI\Commands->run('migrate', Array)
+#9 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(351): CodeIgniter\CLI\Console->run()
+#10 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(104): CodeIgniter\Boot::runCommand(Object(CodeIgniter\CLI\Console))
+#11 /Applications/XAMPP/xamppfiles/htdocs/sios/spark(84): CodeIgniter\Boot::bootSpark(Object(Config\Paths))
+#12 {main}
+CRITICAL - 2024-07-15 15:23:47 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "siswa/index.php"
+[Method: GET, Route: siswa]
+in SYSTEMPATH/Exceptions/FrameworkException.php on line 41.
+ 1 SYSTEMPATH/View/View.php(222): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('siswa/index.php')
+ 2 SYSTEMPATH/Common.php(1171): CodeIgniter\View\View->render('siswa/index', [], true)
+ 3 APPPATH/Controllers/SiswaController.php(15): view('siswa/index', [...])
+ 4 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 5 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 6 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-15 15:24:21 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "siswa/index.php"
+[Method: GET, Route: siswa]
+in SYSTEMPATH/Exceptions/FrameworkException.php on line 41.
+ 1 SYSTEMPATH/View/View.php(222): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('siswa/index.php')
+ 2 SYSTEMPATH/Common.php(1171): CodeIgniter\View\View->render('siswa/index', [], true)
+ 3 APPPATH/Controllers/SiswaController.php(15): view('siswa/index', [...])
+ 4 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 5 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 6 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-15 15:26:30 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "siswa/index.php"
+[Method: GET, Route: siswa]
+in SYSTEMPATH/Exceptions/FrameworkException.php on line 41.
+ 1 SYSTEMPATH/View/View.php(222): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('siswa/index.php')
+ 2 SYSTEMPATH/Common.php(1171): CodeIgniter\View\View->render('siswa/index', [], true)
+ 3 APPPATH/Controllers/SiswaController.php(15): view('siswa/index', [...])
+ 4 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 5 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 6 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-15 15:39:10 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "siswa/index.php"
+[Method: GET, Route: siswa]
+in SYSTEMPATH/Exceptions/FrameworkException.php on line 41.
+ 1 SYSTEMPATH/View/View.php(222): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('siswa/index.php')
+ 2 SYSTEMPATH/Common.php(1171): CodeIgniter\View\View->render('siswa/index', [], true)
+ 3 APPPATH/Controllers/SiswaController.php(15): view('siswa/index', [...])
+ 4 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 5 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 6 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-15 15:40:58 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "siswa/index.php"
+[Method: GET, Route: siswa]
+in SYSTEMPATH/Exceptions/FrameworkException.php on line 41.
+ 1 SYSTEMPATH/View/View.php(222): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('siswa/index.php')
+ 2 SYSTEMPATH/Common.php(1171): CodeIgniter\View\View->render('siswa/index', [], true)
+ 3 APPPATH/Controllers/SiswaController.php(15): view('siswa/index', [...])
+ 4 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 5 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 6 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
