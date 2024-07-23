@@ -39,6 +39,13 @@ Options -Indexes
 
 </IfModule>
 
+<IfModule mod_headers.c>
+    Header add Access-Control-Allow-Origin: "http://localhost:8080/"
+    Header add Access-Control-Allow-Methods: "GET,POST,OPTIONS,DELETE,PUT"
+    Header add Access-Control-Allow-Headers: "origin, x-api-key, x-requested-with, content-type, accept, access-control-request-method, access-control-allow-headers, authorization, observe, enctype, content-length, x-csrf-token"
+    Header add Access-Control-Allow-Credentials true
+</IfModule>
+
 <IfModule !mod_rewrite.c>
 	# If we don't have mod_rewrite installed, all 404's
 	# can be sent to index.php, and everything works as normal.
