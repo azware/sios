@@ -1,0 +1,378 @@
+ERROR - 2024-07-17 15:10:07 --> Error connecting to the database: mysqli_sql_exception: Connection refused in /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php:186
+Stack trace:
+#0 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php(186): mysqli->real_connect('127.0.0.1', 'root', Object(SensitiveParameterValue), 'azware_sios', 3306, '', 0)
+#1 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#2 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+#3 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseBuilder.php(1636): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#4 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#5 /Applications/XAMPP/xamppfiles/htdocs/sios/system/BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
+#6 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Models/SiswaModel.php(19): CodeIgniter\BaseModel->findAll()
+#7 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php(13): App\Models\SiswaModel->getSiswa()
+#8 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+#9 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+#10 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(325): CodeIgniter\CodeIgniter->run()
+#12 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 /Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 /Applications/XAMPP/xamppfiles/htdocs/sios/system/rewrite.php(44): require_once('/Applications/X...')
+#15 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Connection refused in /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php:231
+Stack trace:
+#0 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#1 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+#2 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseBuilder.php(1636): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#3 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#4 /Applications/XAMPP/xamppfiles/htdocs/sios/system/BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
+#5 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Models/SiswaModel.php(19): CodeIgniter\BaseModel->findAll()
+#6 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php(13): App\Models\SiswaModel->getSiswa()
+#7 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+#8 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+#9 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#10 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(325): CodeIgniter\CodeIgniter->run()
+#11 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#12 /Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#13 /Applications/XAMPP/xamppfiles/htdocs/sios/system/rewrite.php(44): require_once('/Applications/X...')
+#14 {main}
+CRITICAL - 2024-07-17 15:10:07 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Connection refused
+[Method: GET, Route: siswa]
+in SYSTEMPATH/Database/BaseConnection.php on line 467.
+ 1 SYSTEMPATH/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1636): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `siswa`', [], false)
+ 3 SYSTEMPATH/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
+ 5 APPPATH/Models/SiswaModel.php(19): CodeIgniter\BaseModel->findAll()
+ 6 APPPATH/Controllers/SiswaController.php(13): App\Models\SiswaModel->getSiswa()
+ 7 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 8 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 9 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+13 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+ERROR - 2024-07-17 15:10:07 --> Error connecting to the database: mysqli_sql_exception: Connection refused in /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php:186
+Stack trace:
+#0 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php(186): mysqli->real_connect('127.0.0.1', 'root', Object(SensitiveParameterValue), 'azware_sios', 3306, '', 0)
+#1 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#2 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+#3 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseBuilder.php(1636): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#4 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#5 /Applications/XAMPP/xamppfiles/htdocs/sios/system/BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
+#6 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Models/SiswaModel.php(19): CodeIgniter\BaseModel->findAll()
+#7 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php(13): App\Models\SiswaModel->getSiswa()
+#8 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+#9 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+#10 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(325): CodeIgniter\CodeIgniter->run()
+#12 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 /Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 /Applications/XAMPP/xamppfiles/htdocs/sios/system/rewrite.php(44): require_once('/Applications/X...')
+#15 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Connection refused in /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php:231
+Stack trace:
+#0 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#1 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+#2 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseBuilder.php(1636): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#3 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#4 /Applications/XAMPP/xamppfiles/htdocs/sios/system/BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
+#5 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Models/SiswaModel.php(19): CodeIgniter\BaseModel->findAll()
+#6 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php(13): App\Models\SiswaModel->getSiswa()
+#7 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+#8 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+#9 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#10 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(325): CodeIgniter\CodeIgniter->run()
+#11 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#12 /Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#13 /Applications/XAMPP/xamppfiles/htdocs/sios/system/rewrite.php(44): require_once('/Applications/X...')
+#14 {main}
+CRITICAL - 2024-07-17 15:10:07 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Connection refused
+[Method: GET, Route: siswa]
+in SYSTEMPATH/Database/BaseConnection.php on line 467.
+ 1 SYSTEMPATH/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1636): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `siswa`', [], false)
+ 3 SYSTEMPATH/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
+ 5 APPPATH/Models/SiswaModel.php(19): CodeIgniter\BaseModel->findAll()
+ 6 APPPATH/Controllers/SiswaController.php(13): App\Models\SiswaModel->getSiswa()
+ 7 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 8 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 9 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+13 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+ERROR - 2024-07-17 15:10:12 --> Error connecting to the database: mysqli_sql_exception: Connection refused in /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php:186
+Stack trace:
+#0 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php(186): mysqli->real_connect('127.0.0.1', 'root', Object(SensitiveParameterValue), 'azware_sios', 3306, '', 0)
+#1 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#2 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+#3 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseBuilder.php(1636): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#4 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#5 /Applications/XAMPP/xamppfiles/htdocs/sios/system/BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
+#6 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Models/SiswaModel.php(19): CodeIgniter\BaseModel->findAll()
+#7 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php(13): App\Models\SiswaModel->getSiswa()
+#8 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+#9 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+#10 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(325): CodeIgniter\CodeIgniter->run()
+#12 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 /Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 /Applications/XAMPP/xamppfiles/htdocs/sios/system/rewrite.php(44): require_once('/Applications/X...')
+#15 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Connection refused in /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php:231
+Stack trace:
+#0 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#1 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+#2 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseBuilder.php(1636): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#3 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#4 /Applications/XAMPP/xamppfiles/htdocs/sios/system/BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
+#5 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Models/SiswaModel.php(19): CodeIgniter\BaseModel->findAll()
+#6 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php(13): App\Models\SiswaModel->getSiswa()
+#7 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+#8 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+#9 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#10 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(325): CodeIgniter\CodeIgniter->run()
+#11 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#12 /Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#13 /Applications/XAMPP/xamppfiles/htdocs/sios/system/rewrite.php(44): require_once('/Applications/X...')
+#14 {main}
+CRITICAL - 2024-07-17 15:10:12 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Connection refused
+[Method: GET, Route: siswa]
+in SYSTEMPATH/Database/BaseConnection.php on line 467.
+ 1 SYSTEMPATH/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1636): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `siswa`', [], false)
+ 3 SYSTEMPATH/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
+ 5 APPPATH/Models/SiswaModel.php(19): CodeIgniter\BaseModel->findAll()
+ 6 APPPATH/Controllers/SiswaController.php(13): App\Models\SiswaModel->getSiswa()
+ 7 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 8 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 9 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+13 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+ERROR - 2024-07-17 15:10:12 --> Error connecting to the database: mysqli_sql_exception: Connection refused in /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php:186
+Stack trace:
+#0 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php(186): mysqli->real_connect('127.0.0.1', 'root', Object(SensitiveParameterValue), 'azware_sios', 3306, '', 0)
+#1 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#2 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+#3 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseBuilder.php(1636): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#4 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#5 /Applications/XAMPP/xamppfiles/htdocs/sios/system/BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
+#6 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Models/SiswaModel.php(19): CodeIgniter\BaseModel->findAll()
+#7 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php(13): App\Models\SiswaModel->getSiswa()
+#8 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+#9 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+#10 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(325): CodeIgniter\CodeIgniter->run()
+#12 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 /Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 /Applications/XAMPP/xamppfiles/htdocs/sios/system/rewrite.php(44): require_once('/Applications/X...')
+#15 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Connection refused in /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php:231
+Stack trace:
+#0 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#1 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+#2 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseBuilder.php(1636): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#3 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#4 /Applications/XAMPP/xamppfiles/htdocs/sios/system/BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
+#5 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Models/SiswaModel.php(19): CodeIgniter\BaseModel->findAll()
+#6 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php(13): App\Models\SiswaModel->getSiswa()
+#7 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+#8 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+#9 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#10 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(325): CodeIgniter\CodeIgniter->run()
+#11 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#12 /Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#13 /Applications/XAMPP/xamppfiles/htdocs/sios/system/rewrite.php(44): require_once('/Applications/X...')
+#14 {main}
+CRITICAL - 2024-07-17 15:10:12 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Connection refused
+[Method: GET, Route: siswa]
+in SYSTEMPATH/Database/BaseConnection.php on line 467.
+ 1 SYSTEMPATH/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1636): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `siswa`', [], false)
+ 3 SYSTEMPATH/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
+ 5 APPPATH/Models/SiswaModel.php(19): CodeIgniter\BaseModel->findAll()
+ 6 APPPATH/Controllers/SiswaController.php(13): App\Models\SiswaModel->getSiswa()
+ 7 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 8 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 9 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+13 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+ERROR - 2024-07-17 15:11:28 --> Error connecting to the database: mysqli_sql_exception: Connection refused in /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php:186
+Stack trace:
+#0 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php(186): mysqli->real_connect('127.0.0.1', 'root', Object(SensitiveParameterValue), 'azware_sios', 3306, '', 0)
+#1 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#2 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+#3 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseBuilder.php(1636): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#4 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#5 /Applications/XAMPP/xamppfiles/htdocs/sios/system/BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
+#6 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Models/SiswaModel.php(19): CodeIgniter\BaseModel->findAll()
+#7 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php(13): App\Models\SiswaModel->getSiswa()
+#8 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+#9 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+#10 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(325): CodeIgniter\CodeIgniter->run()
+#12 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 /Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 /Applications/XAMPP/xamppfiles/htdocs/sios/system/rewrite.php(44): require_once('/Applications/X...')
+#15 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Connection refused in /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php:231
+Stack trace:
+#0 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#1 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+#2 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseBuilder.php(1636): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#3 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#4 /Applications/XAMPP/xamppfiles/htdocs/sios/system/BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
+#5 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Models/SiswaModel.php(19): CodeIgniter\BaseModel->findAll()
+#6 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php(13): App\Models\SiswaModel->getSiswa()
+#7 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+#8 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+#9 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#10 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(325): CodeIgniter\CodeIgniter->run()
+#11 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#12 /Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#13 /Applications/XAMPP/xamppfiles/htdocs/sios/system/rewrite.php(44): require_once('/Applications/X...')
+#14 {main}
+CRITICAL - 2024-07-17 15:11:28 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Connection refused
+[Method: GET, Route: siswa]
+in SYSTEMPATH/Database/BaseConnection.php on line 467.
+ 1 SYSTEMPATH/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1636): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `siswa`', [], false)
+ 3 SYSTEMPATH/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
+ 5 APPPATH/Models/SiswaModel.php(19): CodeIgniter\BaseModel->findAll()
+ 6 APPPATH/Controllers/SiswaController.php(13): App\Models\SiswaModel->getSiswa()
+ 7 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 8 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 9 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+13 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+ERROR - 2024-07-17 15:11:33 --> Error connecting to the database: mysqli_sql_exception: Connection refused in /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php:186
+Stack trace:
+#0 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php(186): mysqli->real_connect('127.0.0.1', 'root', Object(SensitiveParameterValue), 'azware_sios', 3306, '', 0)
+#1 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#2 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+#3 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseBuilder.php(1636): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#4 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#5 /Applications/XAMPP/xamppfiles/htdocs/sios/system/BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
+#6 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Models/SiswaModel.php(19): CodeIgniter\BaseModel->findAll()
+#7 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php(13): App\Models\SiswaModel->getSiswa()
+#8 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+#9 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+#10 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(325): CodeIgniter\CodeIgniter->run()
+#12 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 /Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 /Applications/XAMPP/xamppfiles/htdocs/sios/system/rewrite.php(44): require_once('/Applications/X...')
+#15 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Connection refused in /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php:231
+Stack trace:
+#0 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#1 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+#2 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseBuilder.php(1636): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#3 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#4 /Applications/XAMPP/xamppfiles/htdocs/sios/system/BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
+#5 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Models/SiswaModel.php(19): CodeIgniter\BaseModel->findAll()
+#6 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php(13): App\Models\SiswaModel->getSiswa()
+#7 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+#8 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+#9 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#10 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(325): CodeIgniter\CodeIgniter->run()
+#11 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#12 /Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#13 /Applications/XAMPP/xamppfiles/htdocs/sios/system/rewrite.php(44): require_once('/Applications/X...')
+#14 {main}
+CRITICAL - 2024-07-17 15:11:33 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Connection refused
+[Method: GET, Route: siswa]
+in SYSTEMPATH/Database/BaseConnection.php on line 467.
+ 1 SYSTEMPATH/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1636): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `siswa`', [], false)
+ 3 SYSTEMPATH/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
+ 5 APPPATH/Models/SiswaModel.php(19): CodeIgniter\BaseModel->findAll()
+ 6 APPPATH/Controllers/SiswaController.php(13): App\Models\SiswaModel->getSiswa()
+ 7 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 8 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 9 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+13 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+ERROR - 2024-07-17 15:11:34 --> Error connecting to the database: mysqli_sql_exception: Connection refused in /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php:186
+Stack trace:
+#0 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php(186): mysqli->real_connect('127.0.0.1', 'root', Object(SensitiveParameterValue), 'azware_sios', 3306, '', 0)
+#1 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#2 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+#3 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseBuilder.php(1636): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#4 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#5 /Applications/XAMPP/xamppfiles/htdocs/sios/system/BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
+#6 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Models/SiswaModel.php(19): CodeIgniter\BaseModel->findAll()
+#7 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php(13): App\Models\SiswaModel->getSiswa()
+#8 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+#9 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+#10 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#11 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(325): CodeIgniter\CodeIgniter->run()
+#12 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#13 /Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#14 /Applications/XAMPP/xamppfiles/htdocs/sios/system/rewrite.php(44): require_once('/Applications/X...')
+#15 {main}
+
+Next CodeIgniter\Database\Exceptions\DatabaseException: Connection refused in /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/MySQLi/Connection.php:231
+Stack trace:
+#0 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(421): CodeIgniter\Database\MySQLi\Connection->connect(false)
+#1 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+#2 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Database/BaseBuilder.php(1636): CodeIgniter\Database\BaseConnection->query('SELECT *\nFROM `...', Array, false)
+#3 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+#4 /Applications/XAMPP/xamppfiles/htdocs/sios/system/BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
+#5 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Models/SiswaModel.php(19): CodeIgniter\BaseModel->findAll()
+#6 /Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php(13): App\Models\SiswaModel->getSiswa()
+#7 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+#8 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+#9 /Applications/XAMPP/xamppfiles/htdocs/sios/system/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(NULL, Object(Config\Cache), false)
+#10 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(325): CodeIgniter\CodeIgniter->run()
+#11 /Applications/XAMPP/xamppfiles/htdocs/sios/system/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+#12 /Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+#13 /Applications/XAMPP/xamppfiles/htdocs/sios/system/rewrite.php(44): require_once('/Applications/X...')
+#14 {main}
+CRITICAL - 2024-07-17 15:11:34 --> CodeIgniter\Database\Exceptions\DatabaseException: Unable to connect to the database.
+Main connection [MySQLi]: Connection refused
+[Method: GET, Route: siswa]
+in SYSTEMPATH/Database/BaseConnection.php on line 467.
+ 1 SYSTEMPATH/Database/BaseConnection.php(616): CodeIgniter\Database\BaseConnection->initialize()
+ 2 SYSTEMPATH/Database/BaseBuilder.php(1636): CodeIgniter\Database\BaseConnection->query('SELECT *
+FROM `siswa`', [], false)
+ 3 SYSTEMPATH/Model.php(286): CodeIgniter\Database\BaseBuilder->get()
+ 4 SYSTEMPATH/BaseModel.php(676): CodeIgniter\Model->doFindAll(0, 0)
+ 5 APPPATH/Models/SiswaModel.php(19): CodeIgniter\BaseModel->findAll()
+ 6 APPPATH/Controllers/SiswaController.php(13): App\Models\SiswaModel->getSiswa()
+ 7 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 8 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 9 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+10 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+12 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+13 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')

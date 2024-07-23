@@ -1,0 +1,11 @@
+CRITICAL - 2024-07-20 00:13:18 --> ErrorException: Undefined variable $model
+[Method: GET, Route: siswa]
+in APPPATH/Controllers/SiswaController.php on line 13.
+ 1 APPPATH/Controllers/SiswaController.php(13): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $model', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php', 13)
+ 2 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 3 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 4 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')

@@ -1,0 +1,151 @@
+CRITICAL - 2024-07-23 14:16:42 --> ErrorException: Undefined variable $model
+[Method: GET, Route: siswa]
+in APPPATH/Controllers/SiswaController.php on line 13.
+ 1 APPPATH/Controllers/SiswaController.php(13): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $model', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php', 13)
+ 2 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 3 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 4 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-23 14:16:49 --> ErrorException: Undefined variable $model
+[Method: GET, Route: siswa]
+in APPPATH/Controllers/SiswaController.php on line 13.
+ 1 APPPATH/Controllers/SiswaController.php(13): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $model', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php', 13)
+ 2 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 3 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 4 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-23 14:17:15 --> ErrorException: Undefined variable $model
+[Method: GET, Route: siswa/]
+in APPPATH/Controllers/SiswaController.php on line 13.
+ 1 APPPATH/Controllers/SiswaController.php(13): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $model', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php', 13)
+ 2 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 3 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 4 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-23 14:18:07 --> ErrorException: Undefined variable $model
+[Method: GET, Route: siswa/]
+in APPPATH/Controllers/SiswaController.php on line 13.
+ 1 APPPATH/Controllers/SiswaController.php(13): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $model', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php', 13)
+ 2 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 3 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 4 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-23 14:18:52 --> ErrorException: Undefined variable $siswa
+[Method: GET, Route: siswa/]
+in APPPATH/Views/siswa/index.php on line 20.
+ 1 APPPATH/Views/siswa/index.php(20): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $siswa', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Views/siswa/index.php', 20)
+ 2 SYSTEMPATH/View/View.php(234): include('/Applications/XAMPP/xamppfiles/htdocs/sios/app/Views/siswa/index.php')
+ 3 SYSTEMPATH/View/View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1171): CodeIgniter\View\View->render('siswa/index', [], true)
+ 5 APPPATH/Controllers/SiswaController.php(15): view('siswa/index')
+ 6 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 7 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 8 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-23 14:19:49 --> ErrorException: Undefined variable $siswa
+[Method: GET, Route: siswa/]
+in APPPATH/Views/siswa/index.php on line 20.
+ 1 APPPATH/Views/siswa/index.php(20): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $siswa', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Views/siswa/index.php', 20)
+ 2 SYSTEMPATH/View/View.php(234): include('/Applications/XAMPP/xamppfiles/htdocs/sios/app/Views/siswa/index.php')
+ 3 SYSTEMPATH/View/View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1171): CodeIgniter\View\View->render('siswa/index', [], true)
+ 5 APPPATH/Controllers/SiswaController.php(15): view('siswa/index')
+ 6 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 7 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 8 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-23 14:20:05 --> ErrorException: Undefined variable $siswa
+[Method: GET, Route: siswa/]
+in APPPATH/Views/siswa/index.php on line 20.
+ 1 APPPATH/Views/siswa/index.php(20): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $siswa', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Views/siswa/index.php', 20)
+ 2 SYSTEMPATH/View/View.php(234): include('/Applications/XAMPP/xamppfiles/htdocs/sios/app/Views/siswa/index.php')
+ 3 SYSTEMPATH/View/View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1171): CodeIgniter\View\View->render('siswa/index', [], true)
+ 5 APPPATH/Controllers/SiswaController.php(15): view('siswa/index')
+ 6 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 7 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 8 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-23 14:20:08 --> ErrorException: Undefined variable $siswa
+[Method: GET, Route: siswa/]
+in APPPATH/Views/siswa/index.php on line 20.
+ 1 APPPATH/Views/siswa/index.php(20): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $siswa', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Views/siswa/index.php', 20)
+ 2 SYSTEMPATH/View/View.php(234): include('/Applications/XAMPP/xamppfiles/htdocs/sios/app/Views/siswa/index.php')
+ 3 SYSTEMPATH/View/View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1171): CodeIgniter\View\View->render('siswa/index', [], true)
+ 5 APPPATH/Controllers/SiswaController.php(15): view('siswa/index')
+ 6 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 7 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 8 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-23 14:20:43 --> ErrorException: Undefined variable $siswa
+[Method: GET, Route: siswa/]
+in APPPATH/Views/siswa/index.php on line 20.
+ 1 APPPATH/Views/siswa/index.php(20): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $siswa', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Views/siswa/index.php', 20)
+ 2 SYSTEMPATH/View/View.php(234): include('/Applications/XAMPP/xamppfiles/htdocs/sios/app/Views/siswa/index.php')
+ 3 SYSTEMPATH/View/View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1171): CodeIgniter\View\View->render('siswa/index', [], true)
+ 5 APPPATH/Controllers/SiswaController.php(15): view('siswa/index')
+ 6 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 7 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 8 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-23 14:52:58 --> ParseError: syntax error, unexpected variable "$model", expecting "("
+[Method: GET, Route: siswa/]
+in APPPATH/Controllers/SiswaController.php on line 13.
+ 1 SYSTEMPATH/Autoloader/Autoloader.php(296): CodeIgniter\Autoloader\Autoloader->includeFile('/Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php')
+ 2 SYSTEMPATH/Autoloader/Autoloader.php(272): CodeIgniter\Autoloader\Autoloader->loadInNamespace('App\\Controllers\\SiswaController')
+ 3 [internal function]: CodeIgniter\Autoloader\Autoloader->loadClass('App\\Controllers\\SiswaController')
+ 4 SYSTEMPATH/CodeIgniter.php(887): class_exists('\\App\\Controllers\\SiswaController', true)
+ 5 SYSTEMPATH/CodeIgniter.php(496): CodeIgniter\CodeIgniter->startController()
+ 6 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-23 14:53:05 --> ErrorException: Undefined variable $siswa
+[Method: GET, Route: siswa/]
+in APPPATH/Views/siswa/index.php on line 20.
+ 1 APPPATH/Views/siswa/index.php(20): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $siswa', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Views/siswa/index.php', 20)
+ 2 SYSTEMPATH/View/View.php(234): include('/Applications/XAMPP/xamppfiles/htdocs/sios/app/Views/siswa/index.php')
+ 3 SYSTEMPATH/View/View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1171): CodeIgniter\View\View->render('siswa/index', [], true)
+ 5 APPPATH/Controllers/SiswaController.php(15): view('siswa/index')
+ 6 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 7 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 8 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH/index.php(56): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-23 15:07:23 --> ErrorException: Declaration of App\Controllers\SiswaController::edit($id) must be compatible with CodeIgniter\RESTful\ResourceController::edit($id = null)
+[Method: GET, Route: siswa/create]
+in APPPATH/Controllers/SiswaController.php on line 85.
+ 1 [internal function]: CodeIgniter\Debug\Exceptions->shutdownHandler()
