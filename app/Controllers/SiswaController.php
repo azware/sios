@@ -11,7 +11,7 @@ class SiswaController extends Controller
     {
         $model = new SiswaModel();
         $data['siswa'] = $model->getSiswa();
-
+        
         echo view('siswa/index', $data);
     }
 
@@ -31,13 +31,13 @@ class SiswaController extends Controller
     {
         helper('form');
 
-        if ($this->request->getMethod() === 'post' && $this->validate([
+        if ($this->request->is('post') && $this->validate([
             'nama' => 'required|min_length[3]|max_length[100]',
             'alamat' => 'required',
             'tanggal_lahir' => 'required|valid_date',
             'jenis_kelamin' => 'required|in_list[Laki-laki,Perempuan]',
             'email' => 'required|valid_email',
-            'nomor_telepon' => 'required|min_length[10]|max_length[15]'
+            'nomor_telepon' => 'required|min_length[9]|max_length[15]'
         ])) {
             $model = new SiswaModel();
             $model->save([
@@ -48,8 +48,7 @@ class SiswaController extends Controller
                 'informasi_keluarga' => $this->request->getPost('informasi_keluarga'),
                 'sekolah_sebelumnya' => $this->request->getPost('sekolah_sebelumnya'),
                 'email' => $this->request->getPost('email'),
-                'nomor_telepon' => $this->request->getPost('nomor_telepon'),
-                'foto' => $this->request->getPost('foto')
+                'nomor_telepon' => $this->request->getPost('nomor_telepon')
             ]);
 
             return redirect()->to('/siswa');
@@ -84,8 +83,7 @@ class SiswaController extends Controller
                 'informasi_keluarga' => $this->request->getPost('informasi_keluarga'),
                 'sekolah_sebelumnya' => $this->request->getPost('sekolah_sebelumnya'),
                 'email' => $this->request->getPost('email'),
-                'nomor_telepon' => $this->request->getPost('nomor_telepon'),
-                'foto' => $this->request->getPost('foto')
+                'nomor_telepon' => $this->request->getPost('nomor_telepon')
             ]);
 
             return redirect()->to('/siswa');

@@ -10,7 +10,7 @@ class SiswaModel extends Model
     protected $primaryKey = 'id';
     protected $allowedFields = [
         'nama', 'alamat', 'tanggal_lahir', 'jenis_kelamin', 'informasi_keluarga', 
-        'sekolah_sebelumnya', 'email', 'nomor_telepon', 'foto'
+        'sekolah_sebelumnya', 'email', 'nomor_telepon'
     ];
 
     public function getSiswa($id = null)

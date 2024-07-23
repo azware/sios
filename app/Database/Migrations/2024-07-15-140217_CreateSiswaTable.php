@@ -47,12 +47,7 @@ class CreateSiswaTable extends Migration
                 'type' => 'VARCHAR',
                 'constraint' => '15',
                 'null' => true,
-            ],
-            'foto' => [
-                'type' => 'VARCHAR',
-                'constraint' => '255',
-                'null' => true,
-            ],
+            ]
         ]);
         $this->forge->addKey('id', true);
         $this->forge->createTable('siswa');

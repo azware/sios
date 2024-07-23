@@ -48,10 +48,6 @@
                 <input type="text" name="nomor_telepon" id="nomor_telepon" class="form-control" value="<?= set_value('nomor_telepon', $siswa['nomor_telepon']) ?>" required>
                 <div class="invalid-feedback">Nomor telepon wajib diisi.</div>
             </div>
-            <div class="form-group">
-                <label for="foto">Foto:</label>
-                <input type="text" name="foto" id="foto" class="form-control" value="<?= set_value('foto', $siswa['foto']) ?>">
-            </div>
             <button type="submit" class="btn btn-primary">Simpan</button>
         </form>
     </div>
