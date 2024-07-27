@@ -69,18 +69,18 @@ class Filters extends BaseFilters
      */
     public array $globals = [
         'before' => [
-            'honeypot',
-            'csrf',
-            'invalidchars',
-            'cors',
-            //'cors' => ['except' => ['api/*']],
+            //'honeypot',
+            //'csrf',
+            //'invalidchars',
+            //'cors',
+            'cors' => ['except' => ['api/*']],
         ],
         'after' => [
-            'honeypot',
-            'secureheaders',
+            //'honeypot',
+            //'secureheaders',
+            //'cors',
+            'cors' => ['except' => ['api/*']],
             'toolbar',
-            'cors',
-            //'cors' => ['except' => ['api/*']],
         ],
     ];
 

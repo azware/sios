@@ -12,4 +12,3 @@ $routes->get('siswa/create', 'SiswaController::create');
 $routes->post('siswa/create', 'SiswaController::create');
 $routes->post('siswa/edit/(:num)', 'SiswaController::edit/$1');
 $routes->delete('siswa/delete/(:num)', 'SiswaController::delete/$1');
-

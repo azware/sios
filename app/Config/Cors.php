@@ -36,8 +36,8 @@ class Cors extends BaseConfig
          *   - ['http://localhost:8080']
          *   - ['https://www.example.com']
          */
-        // Allowed HTTP origins for CORS requests
-        'allowedOrigins' => ['http://localhost:8080/'],
+        // Allowed HTTP origins for CORS requests http://localhost:8080/
+        //'allowedOrigins' => ['*'],
 
         /**
          * Origin regex patterns for the `Access-Control-Allow-Origin` header.
@@ -73,6 +73,7 @@ class Cors extends BaseConfig
          */
         // Allowed HTTP headers for CORS requests
         'allowedHeaders' => ['Content-Type', 'Authorization'],
+        //'allowedHeaders' => ['Content-Type', 'multipart/form-data'],
 
         /**
          * Set headers to expose.
@@ -111,6 +112,6 @@ class Cors extends BaseConfig
          *
          * @see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Max-Age
          */
-        'maxAge' => 7200,
+        'maxAge' => 86400,
     ];
 }
