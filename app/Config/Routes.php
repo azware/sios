@@ -1,14 +1,17 @@
 <?php
 
+namespace Config;
+
+use App\Controllers\SiswaController;
+use CodeIgniter\Config\BaseConfig;
 use CodeIgniter\Router\RouteCollection;
 
-/**
- * @var RouteCollection $routes
- */
-$routes->get('/', 'Home::index');
-$routes->get('siswa', 'SiswaController::index');
-$routes->get('siswa/view/(:num)', 'SiswaController::view/$1');
-$routes->get('siswa/create', 'SiswaController::create');
-$routes->post('siswa/create', 'SiswaController::create');
-$routes->post('siswa/edit/(:num)', 'SiswaController::edit/$1');
-$routes->delete('siswa/delete/(:num)', 'SiswaController::delete/$1');
+$routes = Services::routes();
+
+$routes->get('/', 'PageController::index');
+$routes->get('/home', 'PageController::home');
+$routes->get('/siswa', 'PageController::siswaList');
+$routes->get('/siswa/(:num)', 'PageController::getSiswa/$1');
+$routes->post('/siswa/create', 'PageController::createSiswa');
+$routes->post('/siswa/update/(:num)', 'PageController::updateSiswa/$1');
+$routes->delete('/siswa/delete/(:num)', 'PageController::deleteSiswa/$1');
