@@ -1,0 +1,57 @@
+CRITICAL - 2024-08-04 07:45:01 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "layout.php"
+[Method: GET, Route: /]
+in SYSTEMPATH/Exceptions/FrameworkException.php on line 41.
+ 1 SYSTEMPATH/View/View.php(222): CodeIgniter\Exceptions\FrameworkException::forInvalidFile('layout.php')
+ 2 SYSTEMPATH/View/View.php(250): CodeIgniter\View\View->render('layout', [], true)
+ 3 SYSTEMPATH/Common.php(1171): CodeIgniter\View\View->render('siswa/index', [], true)
+ 4 APPPATH/Controllers/Home.php(9): view('siswa/index')
+ 5 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\Home->index()
+ 6 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 7 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH/index.php(64): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+11 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-08-04 09:22:29 --> ErrorException: Undefined variable $siswa
+[Method: GET, Route: /]
+in APPPATH/Views/siswa/index.php on line 17.
+ 1 APPPATH/Views/siswa/index.php(17): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $siswa', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Views/siswa/index.php', 17)
+ 2 SYSTEMPATH/View/View.php(234): include('/Applications/XAMPP/xamppfiles/htdocs/sios/app/Views/siswa/index.php')
+ 3 SYSTEMPATH/View/View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1171): CodeIgniter\View\View->render('siswa/index', [], true)
+ 5 APPPATH/Controllers/Home.php(9): view('siswa/index')
+ 6 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\Home->index()
+ 7 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 8 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH/index.php(64): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-08-04 09:22:30 --> ErrorException: Undefined variable $siswa
+[Method: GET, Route: /]
+in APPPATH/Views/siswa/index.php on line 17.
+ 1 APPPATH/Views/siswa/index.php(17): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $siswa', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Views/siswa/index.php', 17)
+ 2 SYSTEMPATH/View/View.php(234): include('/Applications/XAMPP/xamppfiles/htdocs/sios/app/Views/siswa/index.php')
+ 3 SYSTEMPATH/View/View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1171): CodeIgniter\View\View->render('siswa/index', [], true)
+ 5 APPPATH/Controllers/Home.php(9): view('siswa/index')
+ 6 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\Home->index()
+ 7 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Home))
+ 8 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH/index.php(64): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-08-04 09:58:01 --> ParseError: syntax error, unexpected token "echo", expecting ";" or "{"
+[Method: GET, Route: /]
+in APPPATH/Controllers/PageController.php on line 18.
+ 1 SYSTEMPATH/Autoloader/Autoloader.php(296): CodeIgniter\Autoloader\Autoloader->includeFile('/Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/PageController.php')
+ 2 SYSTEMPATH/Autoloader/Autoloader.php(272): CodeIgniter\Autoloader\Autoloader->loadInNamespace('App\\Controllers\\PageController')
+ 3 [internal function]: CodeIgniter\Autoloader\Autoloader->loadClass('App\\Controllers\\PageController')
+ 4 SYSTEMPATH/CodeIgniter.php(887): class_exists('\\App\\Controllers\\PageController', true)
+ 5 SYSTEMPATH/CodeIgniter.php(496): CodeIgniter\CodeIgniter->startController()
+ 6 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 7 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 9 FCPATH/index.php(64): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+10 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')

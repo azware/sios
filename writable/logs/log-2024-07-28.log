@@ -1,0 +1,186 @@
+CRITICAL - 2024-07-28 13:12:09 --> BadMethodCallException: Call to undefined method App\Models\SiswaModel::getSiswa
+[Method: GET, Route: siswa]
+in SYSTEMPATH/Model.php on line 932.
+ 1 APPPATH/Controllers/SiswaController.php(16): CodeIgniter\Model->__call('getSiswa', [])
+ 2 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 3 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 4 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH/index.php(64): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-28 13:12:26 --> BadMethodCallException: Call to undefined method App\Models\SiswaModel::getSiswa
+[Method: GET, Route: siswa]
+in SYSTEMPATH/Model.php on line 932.
+ 1 APPPATH/Controllers/SiswaController.php(16): CodeIgniter\Model->__call('getSiswa', [])
+ 2 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 3 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 4 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH/index.php(64): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-28 13:12:29 --> BadMethodCallException: Call to undefined method App\Models\SiswaModel::getSiswa
+[Method: GET, Route: siswa]
+in SYSTEMPATH/Model.php on line 932.
+ 1 APPPATH/Controllers/SiswaController.php(16): CodeIgniter\Model->__call('getSiswa', [])
+ 2 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 3 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 4 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH/index.php(64): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-28 13:12:32 --> BadMethodCallException: Call to undefined method App\Models\SiswaModel::getSiswa
+[Method: GET, Route: siswa]
+in SYSTEMPATH/Model.php on line 932.
+ 1 APPPATH/Controllers/SiswaController.php(16): CodeIgniter\Model->__call('getSiswa', [])
+ 2 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->index()
+ 3 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 4 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH/index.php(64): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-28 14:48:36 --> ErrorException: Undefined variable $siswa
+[Method: GET, Route: /]
+in APPPATH/Views/siswa/index.php on line 20.
+ 1 APPPATH/Views/siswa/index.php(20): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined variable $siswa', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Views/siswa/index.php', 20)
+ 2 SYSTEMPATH/View/View.php(234): include('/Applications/XAMPP/xamppfiles/htdocs/sios/app/Views/siswa/index.php')
+ 3 SYSTEMPATH/View/View.php(237): CodeIgniter\View\View->CodeIgniter\View\{closure}()
+ 4 SYSTEMPATH/Common.php(1171): CodeIgniter\View\View->render('siswa/index', [], true)
+ 5 APPPATH/Controllers/Siswa.php(14): view('siswa/index')
+ 6 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\Siswa->index()
+ 7 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Siswa))
+ 8 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 9 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+10 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+11 FCPATH/index.php(64): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+12 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-28 22:44:51 --> CodeIgniter\Database\Exceptions\DataException: There is no data to update.
+[Method: GET, Route: siswa/1]
+in SYSTEMPATH/BaseModel.php on line 1833.
+ 1 SYSTEMPATH/BaseModel.php(1833): CodeIgniter\Database\Exceptions\DataException::forEmptyDataset('update')
+ 2 SYSTEMPATH/BaseModel.php(997): CodeIgniter\BaseModel->transformDataToArray([], 'update')
+ 3 SYSTEMPATH/Model.php(865): CodeIgniter\BaseModel->update([...], [])
+ 4 APPPATH/Controllers/Siswa.php(42): CodeIgniter\Model->update('1', [])
+ 5 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\Siswa->update('1')
+ 6 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Siswa))
+ 7 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH/index.php(64): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+11 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-28 22:44:59 --> CodeIgniter\Database\Exceptions\DataException: There is no data to update.
+[Method: GET, Route: siswa/1]
+in SYSTEMPATH/BaseModel.php on line 1833.
+ 1 SYSTEMPATH/BaseModel.php(1833): CodeIgniter\Database\Exceptions\DataException::forEmptyDataset('update')
+ 2 SYSTEMPATH/BaseModel.php(997): CodeIgniter\BaseModel->transformDataToArray([], 'update')
+ 3 SYSTEMPATH/Model.php(865): CodeIgniter\BaseModel->update([...], [])
+ 4 APPPATH/Controllers/Siswa.php(42): CodeIgniter\Model->update('1', [])
+ 5 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\Siswa->update('1')
+ 6 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Siswa))
+ 7 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 8 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 9 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+10 FCPATH/index.php(64): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+11 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-28 22:46:52 --> ErrorException: Undefined property: App\Controllers\Siswa::$model
+[Method: GET, Route: siswa/1]
+in APPPATH/Controllers/Siswa.php on line 40.
+ 1 APPPATH/Controllers/Siswa.php(40): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined property: App\\Controllers\\Siswa::$model', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/Siswa.php', 40)
+ 2 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\Siswa->show('1')
+ 3 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Siswa))
+ 4 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH/index.php(64): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-28 22:47:59 --> ErrorException: Undefined property: App\Controllers\Siswa::$model
+[Method: GET, Route: siswa/1]
+in APPPATH/Controllers/Siswa.php on line 40.
+ 1 APPPATH/Controllers/Siswa.php(40): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined property: App\\Controllers\\Siswa::$model', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/Siswa.php', 40)
+ 2 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\Siswa->show('1')
+ 3 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\Siswa))
+ 4 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH/index.php(64): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-28 22:51:55 --> ErrorException: Undefined property: App\Controllers\SiswaController::$model
+[Method: GET, Route: siswa/1]
+in APPPATH/Controllers/SiswaController.php on line 40.
+ 1 APPPATH/Controllers/SiswaController.php(40): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined property: App\\Controllers\\SiswaController::$model', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php', 40)
+ 2 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->show('1')
+ 3 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 4 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH/index.php(64): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-28 22:51:57 --> ErrorException: Undefined property: App\Controllers\SiswaController::$model
+[Method: GET, Route: siswa/1]
+in APPPATH/Controllers/SiswaController.php on line 40.
+ 1 APPPATH/Controllers/SiswaController.php(40): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined property: App\\Controllers\\SiswaController::$model', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php', 40)
+ 2 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->show('1')
+ 3 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 4 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH/index.php(64): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-28 22:52:08 --> ErrorException: Undefined property: App\Controllers\SiswaController::$model
+[Method: GET, Route: siswa/1]
+in APPPATH/Controllers/SiswaController.php on line 40.
+ 1 APPPATH/Controllers/SiswaController.php(40): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined property: App\\Controllers\\SiswaController::$model', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php', 40)
+ 2 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->show('1')
+ 3 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 4 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH/index.php(64): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-28 22:52:51 --> ErrorException: Undefined property: App\Controllers\SiswaController::$model
+[Method: GET, Route: siswa/2]
+in APPPATH/Controllers/SiswaController.php on line 40.
+ 1 APPPATH/Controllers/SiswaController.php(40): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined property: App\\Controllers\\SiswaController::$model', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php', 40)
+ 2 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->show('2')
+ 3 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 4 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH/index.php(64): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-28 23:03:43 --> ErrorException: Undefined property: App\Controllers\SiswaController::$model
+[Method: GET, Route: siswa/2]
+in APPPATH/Controllers/SiswaController.php on line 40.
+ 1 APPPATH/Controllers/SiswaController.php(40): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined property: App\\Controllers\\SiswaController::$model', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php', 40)
+ 2 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->show('2')
+ 3 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 4 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH/index.php(64): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-28 23:05:59 --> ErrorException: Undefined property: App\Controllers\SiswaController::$model
+[Method: GET, Route: siswa/2]
+in APPPATH/Controllers/SiswaController.php on line 40.
+ 1 APPPATH/Controllers/SiswaController.php(40): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined property: App\\Controllers\\SiswaController::$model', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php', 40)
+ 2 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->show('2')
+ 3 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 4 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH/index.php(64): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
+CRITICAL - 2024-07-28 23:06:07 --> ErrorException: Undefined property: App\Controllers\SiswaController::$model
+[Method: GET, Route: siswa/2]
+in APPPATH/Controllers/SiswaController.php on line 40.
+ 1 APPPATH/Controllers/SiswaController.php(40): CodeIgniter\Debug\Exceptions->errorHandler(2, 'Undefined property: App\\Controllers\\SiswaController::$model', '/Applications/XAMPP/xamppfiles/htdocs/sios/app/Controllers/SiswaController.php', 40)
+ 2 SYSTEMPATH/CodeIgniter.php(933): App\Controllers\SiswaController->show('2')
+ 3 SYSTEMPATH/CodeIgniter.php(509): CodeIgniter\CodeIgniter->runController(Object(App\Controllers\SiswaController))
+ 4 SYSTEMPATH/CodeIgniter.php(355): CodeIgniter\CodeIgniter->handleRequest(null, Object(Config\Cache), false)
+ 5 SYSTEMPATH/Boot.php(325): CodeIgniter\CodeIgniter->run()
+ 6 SYSTEMPATH/Boot.php(67): CodeIgniter\Boot::runCodeIgniter(Object(CodeIgniter\CodeIgniter))
+ 7 FCPATH/index.php(64): CodeIgniter\Boot::bootWeb(Object(Config\Paths))
+ 8 SYSTEMPATH/rewrite.php(44): require_once('/Applications/XAMPP/xamppfiles/htdocs/sios/public/index.php')
