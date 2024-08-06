@@ -145,32 +145,5 @@
             });
         });
     });
-    $(document).ready(function() {
-    });
 
-    function viewSiswa(id) {
-        // Implement view functionality
-        window.location.href = '/siswa/view/' + id;
-    }
-
-    function editSiswa(id) {
-        // Implement edit functionality
-        window.location.href = '/siswa/edit/' + id;
-    }
-
-    function deleteSiswa(id) {
-        if (confirm('Apakah Anda yakin ingin menghapus siswa ini?')) {
-            $.ajax({
-                url: '/siswa/delete/' + id,
-                type: 'DELETE',
-                success: function(result) {
-                    // Reload the table
-                    $('#siswaTable').DataTable().ajax.reload();
-                },
-                error: function(xhr, status, error) {
-                    alert('Terjadi kesalahan: ' + error);
-                }
-            });
-        }
-    }
 </script>
