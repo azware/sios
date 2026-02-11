@@ -130,6 +130,13 @@ export default function StudentsPage() {
     downloadCsv(`students_${stamp}.csv`, csv)
   }
 
+  const handleDownloadTemplate = () => {
+    const headers = ['nis', 'nisn', 'name', 'email', 'classId', 'schoolId', 'username', 'password', 'phone', 'gender', 'address']
+    const rows = [['NIS001', 'NISN001', 'Ani Wijaya', 'siswa1@sios.local', '1', '1', 'siswa_ani', 'Admin123!', '08123456780', 'FEMALE', 'Alamat contoh']]
+    const csv = toCsv(headers, rows)
+    downloadCsv('students_template.csv', csv)
+  }
+
   const handleImportClick = () => {
     setError('')
     setSuccess('')
@@ -221,6 +228,9 @@ export default function StudentsPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900">Data Siswa</h1>
         <div className="flex items-center gap-2">
+          <button className="btn-secondary" onClick={handleDownloadTemplate}>
+            Template CSV
+          </button>
           <button className="btn-secondary" onClick={handleExportCsv} disabled={loading || sortedStudents.length === 0}>
             Export CSV
           </button>

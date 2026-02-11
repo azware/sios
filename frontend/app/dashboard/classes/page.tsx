@@ -104,6 +104,13 @@ export default function ClassesPage() {
     downloadCsv(`classes_${stamp}.csv`, csv)
   }
 
+  const handleDownloadTemplate = () => {
+    const headers = ['name', 'level', 'schoolId']
+    const rows = [['10A', '10', '1']]
+    const csv = toCsv(headers, rows)
+    downloadCsv('classes_template.csv', csv)
+  }
+
   const handleImportClick = () => {
     setError('')
     setSuccess('')
@@ -173,6 +180,9 @@ export default function ClassesPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900">Data Kelas</h1>
         <div className="flex items-center gap-2">
+          <button className="btn-secondary" onClick={handleDownloadTemplate}>
+            Template CSV
+          </button>
           <button className="btn-secondary" onClick={handleExportCsv} disabled={loading || sortedClasses.length === 0}>
             Export CSV
           </button>

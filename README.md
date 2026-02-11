@@ -100,6 +100,7 @@ powershell -ExecutionPolicy Bypass -File backend\test-comprehensive.ps1
 ```
 
 ## CSV Import Notes
+- Setiap modul punya tombol `Template CSV` di halaman list untuk unduh format siap pakai.
 - `Subjects` header: `code,name,description`
 - `Classes` header: `name,level,schoolId`
 - `Teachers` header: `nip,name,email,phone,schoolId,username,password`

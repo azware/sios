@@ -119,6 +119,13 @@ export default function TeachersPage() {
     downloadCsv(`teachers_${stamp}.csv`, csv)
   }
 
+  const handleDownloadTemplate = () => {
+    const headers = ['nip', 'name', 'email', 'phone', 'schoolId', 'username', 'password']
+    const rows = [['NIP001', 'Budi Santoso', 'guru1@sios.local', '08123456789', '1', 'guru_budi', 'Admin123!']]
+    const csv = toCsv(headers, rows)
+    downloadCsv('teachers_template.csv', csv)
+  }
+
   const handleImportClick = () => {
     setError('')
     setSuccess('')
@@ -204,6 +211,9 @@ export default function TeachersPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900">Data Guru</h1>
         <div className="flex items-center gap-2">
+          <button className="btn-secondary" onClick={handleDownloadTemplate}>
+            Template CSV
+          </button>
           <button className="btn-secondary" onClick={handleExportCsv} disabled={loading || sortedTeachers.length === 0}>
             Export CSV
           </button>
