@@ -25,7 +25,7 @@
 - Added UI RBAC and route guards
 - Added unique conflict feedback in forms
 - Added environment templates: `backend/.env.example`, `frontend/.env.local.example`
-- Added onboarding wizard for admin (`/dashboard/onboarding`) to setup first school and class
+- Added onboarding wizard for admin (`/dashboard/onboarding`) to setup first school, class, and subject
 
 ## Next Steps
 1. CSV export/import

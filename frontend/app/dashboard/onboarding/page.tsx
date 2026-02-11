@@ -4,7 +4,7 @@ import { FormEvent, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import apiClient from '@/lib/api'
 
-type Step = 'school' | 'class' | 'done'
+type Step = 'school' | 'class' | 'subject' | 'done'
 
 interface SchoolOption {
   id: number
@@ -24,6 +24,12 @@ interface ClassForm {
   schoolId: string
 }
 
+interface SubjectForm {
+  code: string
+  name: string
+  description: string
+}
+
 const initialSchoolForm: SchoolForm = {
   name: '',
   email: '',
@@ -37,17 +43,25 @@ const initialClassForm: ClassForm = {
   schoolId: '',
 }
 
+const initialSubjectForm: SubjectForm = {
+  code: '',
+  name: '',
+  description: '',
+}
+
 export default function OnboardingPage() {
   const [step, setStep] = useState<Step>('school')
   const [loading, setLoading] = useState(true)
   const [savingSchool, setSavingSchool] = useState(false)
   const [savingClass, setSavingClass] = useState(false)
+  const [savingSubject, setSavingSubject] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
   const [schools, setSchools] = useState<SchoolOption[]>([])
   const [schoolForm, setSchoolForm] = useState<SchoolForm>(initialSchoolForm)
   const [classForm, setClassForm] = useState<ClassForm>(initialClassForm)
+  const [subjectForm, setSubjectForm] = useState<SubjectForm>(initialSubjectForm)
 
   const selectedSchoolName = useMemo(() => {
     const selectedId = Number(classForm.schoolId)
@@ -59,9 +73,14 @@ export default function OnboardingPage() {
       setLoading(true)
       setError('')
       try {
-        const [schoolsRes, classesRes] = await Promise.all([apiClient.get('/schools'), apiClient.get('/classes')])
+        const [schoolsRes, classesRes, subjectsRes] = await Promise.all([
+          apiClient.get('/schools'),
+          apiClient.get('/classes'),
+          apiClient.get('/subjects'),
+        ])
         const schoolItems: SchoolOption[] = Array.isArray(schoolsRes.data) ? schoolsRes.data : []
         const classItems: Array<{ id: number }> = Array.isArray(classesRes.data) ? classesRes.data : []
+        const subjectItems: Array<{ id: number }> = Array.isArray(subjectsRes.data) ? subjectsRes.data : []
 
         setSchools(schoolItems)
 
@@ -73,6 +92,11 @@ export default function OnboardingPage() {
         if (classItems.length === 0) {
           setStep('class')
           setClassForm((prev) => ({ ...prev, schoolId: String(schoolItems[0].id) }))
+          return
+        }
+
+        if (subjectItems.length === 0) {
+          setStep('subject')
           return
         }
 
@@ -146,13 +170,41 @@ export default function OnboardingPage() {
         schoolId: Number(classForm.schoolId),
       })
 
-      setSuccess('Kelas pertama berhasil dibuat. Setup awal selesai.')
-      setStep('done')
+      setSuccess('Kelas pertama berhasil dibuat. Lanjut ke pembuatan mata pelajaran pertama.')
+      setStep('subject')
       setClassForm(initialClassForm)
     } catch (err: any) {
       setError(err?.response?.data?.error || 'Gagal membuat kelas.')
     } finally {
       setSavingClass(false)
+    }
+  }
+
+  const handleCreateSubject = async (event: FormEvent) => {
+    event.preventDefault()
+    setError('')
+    setSuccess('')
+
+    if (!subjectForm.code.trim() || !subjectForm.name.trim()) {
+      setError('Kode dan nama mata pelajaran wajib diisi.')
+      return
+    }
+
+    setSavingSubject(true)
+    try {
+      await apiClient.post('/subjects', {
+        code: subjectForm.code.trim().toUpperCase(),
+        name: subjectForm.name.trim(),
+        description: subjectForm.description.trim() || undefined,
+      })
+
+      setSuccess('Mata pelajaran pertama berhasil dibuat. Setup awal selesai.')
+      setStep('done')
+      setSubjectForm(initialSubjectForm)
+    } catch (err: any) {
+      setError(err?.response?.data?.error || 'Gagal membuat mata pelajaran.')
+    } finally {
+      setSavingSubject(false)
     }
   }
 
@@ -177,7 +229,8 @@ export default function OnboardingPage() {
         <div className="flex items-center gap-3 text-sm">
           <span className={`px-3 py-1 rounded-full ${step === 'school' ? 'bg-blue-600 text-white' : 'bg-gray-100'}`}>1. Sekolah</span>
           <span className={`px-3 py-1 rounded-full ${step === 'class' ? 'bg-blue-600 text-white' : 'bg-gray-100'}`}>2. Kelas</span>
-          <span className={`px-3 py-1 rounded-full ${step === 'done' ? 'bg-green-600 text-white' : 'bg-gray-100'}`}>3. Selesai</span>
+          <span className={`px-3 py-1 rounded-full ${step === 'subject' ? 'bg-blue-600 text-white' : 'bg-gray-100'}`}>3. Mapel</span>
+          <span className={`px-3 py-1 rounded-full ${step === 'done' ? 'bg-green-600 text-white' : 'bg-gray-100'}`}>4. Selesai</span>
         </div>
       </div>
 
@@ -287,10 +340,55 @@ export default function OnboardingPage() {
         </form>
       )}
 
+      {step === 'subject' && (
+        <form onSubmit={handleCreateSubject} className="card space-y-4">
+          <h2 className="text-xl font-semibold text-gray-900">Langkah 3: Buat Mata Pelajaran Pertama</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Kode *</label>
+              <input
+                className="input-field"
+                placeholder="Contoh: MAT101"
+                value={subjectForm.code}
+                onChange={(e) => setSubjectForm((prev) => ({ ...prev, code: e.target.value }))}
+                disabled={savingSubject}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Nama Mata Pelajaran *</label>
+              <input
+                className="input-field"
+                placeholder="Contoh: Matematika"
+                value={subjectForm.name}
+                onChange={(e) => setSubjectForm((prev) => ({ ...prev, name: e.target.value }))}
+                disabled={savingSubject}
+                required
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
+            <textarea
+              className="input-field"
+              rows={3}
+              value={subjectForm.description}
+              onChange={(e) => setSubjectForm((prev) => ({ ...prev, description: e.target.value }))}
+              disabled={savingSubject}
+            />
+          </div>
+          <button type="submit" className="btn-primary" disabled={savingSubject}>
+            {savingSubject ? 'Menyimpan...' : 'Simpan Mata Pelajaran'}
+          </button>
+        </form>
+      )}
+
       {step === 'done' && (
         <div className="card space-y-4">
           <h2 className="text-xl font-semibold text-gray-900">Setup Awal Selesai</h2>
-          <p className="text-gray-700">Data dasar sekolah dan kelas sudah tersedia. Anda bisa lanjut ke manajemen data lainnya.</p>
+          <p className="text-gray-700">
+            Data dasar sekolah, kelas, dan mata pelajaran sudah tersedia. Anda bisa lanjut ke manajemen data lainnya.
+          </p>
           <div className="flex flex-wrap gap-3">
             <Link href="/dashboard/students/new" className="btn-primary">
               Tambah Siswa
@@ -298,8 +396,8 @@ export default function OnboardingPage() {
             <Link href="/dashboard/teachers/new" className="btn-secondary">
               Tambah Guru
             </Link>
-            <Link href="/dashboard/subjects/new" className="btn-secondary">
-              Tambah Mata Pelajaran
+            <Link href="/dashboard/subjects" className="btn-secondary">
+              Lihat Mata Pelajaran
             </Link>
           </div>
         </div>

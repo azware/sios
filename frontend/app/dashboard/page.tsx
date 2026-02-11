@@ -53,11 +53,12 @@ export default function DashboardPage() {
         })
 
         if (isAdmin) {
-          const schoolsRes = await apiClient.get('/schools')
+          const [schoolsRes, subjectsRes] = await Promise.all([apiClient.get('/schools'), apiClient.get('/subjects')])
           const schoolCount = Array.isArray(schoolsRes.data) ? schoolsRes.data.length : 0
+          const subjectCount = Array.isArray(subjectsRes.data) ? subjectsRes.data.length : 0
           setSetup({
             isAdmin: true,
-            needsOnboarding: schoolCount === 0 || classCount === 0,
+            needsOnboarding: schoolCount === 0 || classCount === 0 || subjectCount === 0,
           })
         }
       } catch (error) {
