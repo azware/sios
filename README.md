@@ -69,14 +69,20 @@ cd d:\projects\sios
 docker compose -f docker-compose.yml up -d db
 ```
 
-2. Backend
+2. Environment Variables
+```bash
+copy backend\.env.example backend\.env
+copy frontend\.env.local.example frontend\.env.local
+```
+
+3. Backend
 ```bash
 cd d:\projects\sios\backend
 npm install
 npm run dev
 ```
 
-3. Frontend
+4. Frontend
 ```bash
 cd d:\projects\sios\frontend
 npm install

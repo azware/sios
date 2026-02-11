@@ -89,6 +89,11 @@ npm install
 
 ### Configuration
 
+Copy template lalu sesuaikan nilai:
+```bash
+copy .env.local.example .env.local
+```
+
 File: `.env.local`
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:4000/api

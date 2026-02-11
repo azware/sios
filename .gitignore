@@ -11,6 +11,8 @@ coverage/
 .env
 .env.*
 !.env.example
+!backend/.env.example
+!frontend/.env.local.example
 
 npm-debug.log*
 yarn-debug.log*

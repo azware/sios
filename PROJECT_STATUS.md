@@ -24,6 +24,7 @@
 - Added detail pages and list pagination/sorting
 - Added UI RBAC and route guards
 - Added unique conflict feedback in forms
+- Added environment templates: `backend/.env.example`, `frontend/.env.local.example`
 
 ## Next Steps
 1. Onboarding wizard (first school + initial admin/class)
