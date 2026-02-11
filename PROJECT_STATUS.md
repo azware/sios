@@ -26,6 +26,7 @@
 - Added unique conflict feedback in forms
 - Added environment templates: `backend/.env.example`, `frontend/.env.local.example`
 - Added onboarding wizard for admin (`/dashboard/onboarding`) to setup first school, class, and subject
+- Added auto-redirect for admin to onboarding when setup awal belum lengkap
 
 ## Next Steps
 1. CSV export/import

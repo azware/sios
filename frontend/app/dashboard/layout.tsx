@@ -4,6 +4,7 @@ import { ReactNode, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { authService, User } from '@/lib/auth'
+import apiClient from '@/lib/api'
 import RoleGuard from '@/components/RoleGuard'
 
 const routeRules: Array<{ pattern: RegExp; roles: User['role'][] }> = [
@@ -42,6 +43,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [allowed, setAllowed] = useState(true)
+  const [forcingOnboarding, setForcingOnboarding] = useState(false)
 
   useEffect(() => {
     const currentUser = authService.getCurrentUser()
@@ -58,6 +60,43 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     setAllowed(canAccess)
     if (!canAccess && pathname !== '/dashboard') {
       router.replace('/dashboard')
+    }
+  }, [pathname, router, user])
+
+  useEffect(() => {
+    if (!user || user.role !== 'ADMIN') {
+      setForcingOnboarding(false)
+      return
+    }
+
+    let active = true
+    const checkOnboarding = async () => {
+      try {
+        const [schoolsRes, classesRes, subjectsRes] = await Promise.all([
+          apiClient.get('/schools'),
+          apiClient.get('/classes'),
+          apiClient.get('/subjects'),
+        ])
+
+        if (!active) return
+
+        const schoolCount = Array.isArray(schoolsRes.data) ? schoolsRes.data.length : 0
+        const classCount = Array.isArray(classesRes.data) ? classesRes.data.length : 0
+        const subjectCount = Array.isArray(subjectsRes.data) ? subjectsRes.data.length : 0
+        const needsOnboarding = schoolCount === 0 || classCount === 0 || subjectCount === 0
+
+        setForcingOnboarding(needsOnboarding)
+        if (needsOnboarding && pathname !== '/dashboard/onboarding') {
+          router.replace('/dashboard/onboarding')
+        }
+      } catch {
+        // Keep default route behavior when onboarding status cannot be fetched.
+      }
+    }
+
+    checkOnboarding()
+    return () => {
+      active = false
     }
   }, [pathname, router, user])
 
@@ -96,6 +135,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         <nav className="mt-8">
           {menuItems
             .filter((item) => (user ? item.roles.includes(user.role) : false))
+            .filter((item) => !forcingOnboarding || item.href === '/dashboard/onboarding' || item.href === '/dashboard')
             .map((item) => (
               <Link
                 key={item.href}
