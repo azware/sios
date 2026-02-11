@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import apiClient from '@/lib/api'
 import { authService } from '@/lib/auth'
+import { downloadCsv, parseCsv, toCsv } from '@/lib/csv'
 
 interface Student {
   id: number
@@ -12,6 +13,7 @@ interface Student {
   name: string
   email: string
   classId?: number
+  schoolId?: number
   class?: { name: string }
 }
 
@@ -20,26 +22,30 @@ export default function StudentsPage() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
   const [deletingId, setDeletingId] = useState<number | null>(null)
+  const [importing, setImporting] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const [sortKey, setSortKey] = useState<'name' | 'nis' | 'nisn' | 'email' | 'class'>('name')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
   const user = authService.getCurrentUser()
+  const isAdmin = user?.role === 'ADMIN'
+
+  const fetchStudents = async () => {
+    try {
+      const response = await apiClient.get('/students')
+      setStudents(Array.isArray(response.data) ? response.data : [])
+    } catch (err) {
+      console.error('Error fetching students:', err)
+      setError('Gagal memuat data siswa.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        const response = await apiClient.get('/students')
-        setStudents(Array.isArray(response.data) ? response.data : [])
-      } catch (error) {
-        console.error('Error fetching students:', error)
-        setError('Gagal memuat data siswa.')
-      } finally {
-        setLoading(false)
-      }
-    }
-
     fetchStudents()
   }, [])
 
@@ -53,9 +59,11 @@ export default function StudentsPage() {
 
     setDeletingId(id)
     setError('')
+    setSuccess('')
     try {
       await apiClient.delete(`/students/${id}`)
       setStudents((prev) => prev.filter((student) => student.id !== id))
+      setSuccess('Siswa berhasil dihapus.')
     } catch (err) {
       console.error('Error deleting student:', err)
       setError('Gagal menghapus siswa.')
@@ -101,9 +109,110 @@ export default function StudentsPage() {
   const handleSort = (key: typeof sortKey) => {
     if (sortKey === key) {
       setSortDir((prev) => (prev === 'asc' ? 'desc' : 'asc'))
-    } else {
-      setSortKey(key)
-      setSortDir('asc')
+      return
+    }
+    setSortKey(key)
+    setSortDir('asc')
+  }
+
+  const handleExportCsv = () => {
+    const headers = ['nis', 'nisn', 'name', 'email', 'classId', 'schoolId']
+    const rows = sortedStudents.map((item) => [
+      item.nis,
+      item.nisn,
+      item.name,
+      item.email,
+      String(item.classId || ''),
+      String(item.schoolId || ''),
+    ])
+    const csv = toCsv(headers, rows)
+    const stamp = new Date().toISOString().slice(0, 19).replace(/[-:T]/g, '')
+    downloadCsv(`students_${stamp}.csv`, csv)
+  }
+
+  const handleImportClick = () => {
+    setError('')
+    setSuccess('')
+    fileInputRef.current?.click()
+  }
+
+  const handleImportFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    setImporting(true)
+    setError('')
+    setSuccess('')
+
+    try {
+      const text = await file.text()
+      const rows = parseCsv(text)
+      if (rows.length === 0) {
+        setError('CSV kosong/tidak valid. Header wajib: nis,nisn,name,email,classId,schoolId,username,password')
+        return
+      }
+
+      let created = 0
+      let failed = 0
+      const failureLines: string[] = []
+
+      for (let i = 0; i < rows.length; i += 1) {
+        const row = rows[i]
+        const classId = Number((row.classid || row.classId || '').trim())
+        const schoolId = Number((row.schoolid || row.schoolId || '').trim())
+        const username = (row.username || '').trim()
+        const password = (row.password || '').trim()
+        const email = (row.email || '').trim()
+
+        const payload = {
+          nis: (row.nis || '').trim(),
+          nisn: (row.nisn || '').trim(),
+          name: (row.name || '').trim(),
+          email,
+          phone: (row.phone || '').trim() || undefined,
+          gender: (row.gender || '').trim() || undefined,
+          address: (row.address || '').trim() || undefined,
+          classId,
+          schoolId,
+        }
+
+        if (!payload.nis || !payload.nisn || !payload.name || !payload.email || !Number.isFinite(classId) || !Number.isFinite(schoolId) || !username || !password) {
+          failed += 1
+          if (failureLines.length < 10) failureLines.push(`Baris ${i + 2}: data tidak lengkap`)
+          continue
+        }
+
+        try {
+          const reg = await apiClient.post('/auth/register', {
+            username,
+            email,
+            password,
+            role: 'STUDENT',
+          })
+
+          const userId = reg?.data?.id
+          if (!userId) {
+            throw new Error('register_user_failed')
+          }
+
+          await apiClient.post('/students', { ...payload, userId })
+          created += 1
+        } catch (err: any) {
+          failed += 1
+          const reason = err?.response?.data?.error || err?.message || 'error'
+          if (failureLines.length < 10) failureLines.push(`Baris ${i + 2}: ${reason}`)
+        }
+      }
+
+      await fetchStudents()
+      setSuccess(`Import siswa selesai. Berhasil: ${created}, gagal: ${failed}.`)
+      if (failureLines.length > 0) setError(failureLines.join(' | '))
+    } catch (err) {
+      console.error('Import student CSV failed:', err)
+      setError('Gagal membaca file CSV siswa.')
+    } finally {
+      setImporting(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
     }
   }
 
@@ -111,11 +220,28 @@ export default function StudentsPage() {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900">Data Siswa</h1>
-        {user?.role === 'ADMIN' && (
-          <Link href="/dashboard/students/new" className="btn-primary">
-            + Tambah Siswa
-          </Link>
-        )}
+        <div className="flex items-center gap-2">
+          <button className="btn-secondary" onClick={handleExportCsv} disabled={loading || sortedStudents.length === 0}>
+            Export CSV
+          </button>
+          {isAdmin && (
+            <>
+              <button className="btn-secondary" onClick={handleImportClick} disabled={importing}>
+                {importing ? 'Import...' : 'Import CSV'}
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".csv,text/csv"
+                className="hidden"
+                onChange={handleImportFile}
+              />
+              <Link href="/dashboard/students/new" className="btn-primary">
+                + Tambah Siswa
+              </Link>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="card mb-6">
@@ -127,7 +253,9 @@ export default function StudentsPage() {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="input-field flex-1"
           />
-          <button className="btn-primary">Cari</button>
+          <button className="btn-primary" type="button">
+            Cari
+          </button>
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-gray-600">
           <span>Urutkan:</span>
@@ -164,13 +292,20 @@ export default function StudentsPage() {
         </div>
       </div>
 
+      {error && (
+        <div className="card mb-4">
+          <p className="text-red-600 text-sm">{error}</p>
+        </div>
+      )}
+      {success && (
+        <div className="card mb-4">
+          <p className="text-green-700 text-sm">{success}</p>
+        </div>
+      )}
+
       {loading ? (
         <div className="card text-center py-8">
           <p className="text-gray-600">Memuat data siswa...</p>
-        </div>
-      ) : error ? (
-        <div className="card text-center py-8">
-          <p className="text-red-600">{error}</p>
         </div>
       ) : sortedStudents.length === 0 ? (
         <div className="card text-center py-8">
@@ -193,30 +328,20 @@ export default function StudentsPage() {
             <tbody>
               {pagedStudents.map((student, index) => (
                 <tr key={student.id} className="border-b hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm text-gray-900">
-                    {(currentPage - 1) * pageSize + index + 1}
-                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-900">{(currentPage - 1) * pageSize + index + 1}</td>
                   <td className="px-6 py-4 text-sm font-medium text-gray-900">{student.name}</td>
                   <td className="px-6 py-4 text-sm text-gray-600">{student.nis}</td>
                   <td className="px-6 py-4 text-sm text-gray-600">{student.nisn}</td>
                   <td className="px-6 py-4 text-sm text-gray-600">{student.email}</td>
-                  <td className="px-6 py-4 text-sm text-gray-600">
-                    {student.class?.name || '-'}
-                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-600">{student.class?.name || '-'}</td>
                   <td className="px-6 py-4 text-sm">
                     <div className="flex gap-2">
-                      <Link
-                        href={`/dashboard/students/${student.id}/detail`}
-                        className="text-gray-600 hover:text-gray-800"
-                      >
+                      <Link href={`/dashboard/students/${student.id}/detail`} className="text-gray-600 hover:text-gray-800">
                         Detail
                       </Link>
-                      {user?.role === 'ADMIN' && (
+                      {isAdmin && (
                         <>
-                          <Link
-                            href={`/dashboard/students/${student.id}`}
-                            className="text-blue-600 hover:text-blue-800"
-                          >
+                          <Link href={`/dashboard/students/${student.id}`} className="text-blue-600 hover:text-blue-800">
                             Edit
                           </Link>
                           <button
@@ -241,11 +366,7 @@ export default function StudentsPage() {
         Menampilkan {pagedStudents.length} dari {sortedStudents.length} siswa (Total: {students.length})
       </div>
       <div className="mt-2 flex items-center gap-2">
-        <button
-          className="btn-secondary"
-          disabled={currentPage === 1}
-          onClick={() => setPage((prev) => Math.max(1, prev - 1))}
-        >
+        <button className="btn-secondary" disabled={currentPage === 1} onClick={() => setPage((prev) => Math.max(1, prev - 1))}>
           Sebelumnya
         </button>
         <span className="text-sm text-gray-600">

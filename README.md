@@ -30,7 +30,7 @@ SIOS adalah aplikasi Sistem Informasi Operasional Sekolah untuk mengelola data s
 - Authentication: JWT login/register
 - Role-based UI and route protection (frontend)
 - Admin onboarding wizard (setup sekolah + kelas pertama)
-- CSV export/import untuk modul mata pelajaran (frontend)
+- CSV export/import untuk modul mata pelajaran, siswa, guru, dan kelas (frontend)
 - Detail pages (student/teacher/class/school)
 - Search, sort, pagination on list pages
 - Unique conflict feedback (NIS/NISN/email/code/name)
@@ -98,6 +98,12 @@ Backend: http://localhost:4000/api
 ```bash
 powershell -ExecutionPolicy Bypass -File backend\test-comprehensive.ps1
 ```
+
+## CSV Import Notes
+- `Subjects` header: `code,name,description`
+- `Classes` header: `name,level,schoolId`
+- `Teachers` header: `nip,name,email,phone,schoolId,username,password`
+- `Students` header: `nis,nisn,name,email,classId,schoolId,username,password`
 
 ## Notes
 - Backend tetap menjadi sumber otoritas akses (RBAC).

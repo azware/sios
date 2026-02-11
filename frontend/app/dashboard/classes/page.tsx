@@ -1,14 +1,16 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import apiClient from '@/lib/api'
 import { authService } from '@/lib/auth'
+import { downloadCsv, parseCsv, toCsv } from '@/lib/csv'
 
 interface Class {
   id: number
   name: string
   level: string
+  schoolId?: number
   students?: Array<any>
 }
 
@@ -16,27 +18,31 @@ export default function ClassesPage() {
   const [classes, setClasses] = useState<Class[]>([])
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<number | null>(null)
+  const [importing, setImporting] = useState(false)
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [sortKey, setSortKey] = useState<'name' | 'level'>('name')
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(6)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
   const user = authService.getCurrentUser()
+  const isAdmin = user?.role === 'ADMIN'
+
+  const fetchClasses = async () => {
+    try {
+      const response = await apiClient.get('/classes')
+      setClasses(Array.isArray(response.data) ? response.data : [])
+    } catch (err) {
+      console.error('Error fetching classes:', err)
+      setError('Gagal memuat data kelas.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    const fetchClasses = async () => {
-      try {
-        const response = await apiClient.get('/classes')
-        setClasses(Array.isArray(response.data) ? response.data : [])
-      } catch (error) {
-        console.error('Error fetching classes:', error)
-        setError('Gagal memuat data kelas.')
-      } finally {
-        setLoading(false)
-      }
-    }
-
     fetchClasses()
   }, [])
 
@@ -65,10 +71,10 @@ export default function ClassesPage() {
   const handleSort = (key: typeof sortKey) => {
     if (sortKey === key) {
       setSortDir((prev) => (prev === 'asc' ? 'desc' : 'asc'))
-    } else {
-      setSortKey(key)
-      setSortDir('asc')
+      return
     }
+    setSortKey(key)
+    setSortDir('asc')
   }
 
   const handleDelete = async (id: number) => {
@@ -77,9 +83,11 @@ export default function ClassesPage() {
 
     setDeletingId(id)
     setError('')
+    setSuccess('')
     try {
       await apiClient.delete(`/classes/${id}`)
       setClasses((prev) => prev.filter((kelas) => kelas.id !== id))
+      setSuccess('Kelas berhasil dihapus.')
     } catch (err) {
       console.error('Error deleting class:', err)
       setError('Gagal menghapus kelas.')
@@ -88,15 +96,104 @@ export default function ClassesPage() {
     }
   }
 
+  const handleExportCsv = () => {
+    const headers = ['name', 'level', 'schoolId']
+    const rows = sortedClasses.map((item) => [item.name, item.level, String(item.schoolId || '')])
+    const csv = toCsv(headers, rows)
+    const stamp = new Date().toISOString().slice(0, 19).replace(/[-:T]/g, '')
+    downloadCsv(`classes_${stamp}.csv`, csv)
+  }
+
+  const handleImportClick = () => {
+    setError('')
+    setSuccess('')
+    fileInputRef.current?.click()
+  }
+
+  const handleImportFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    setImporting(true)
+    setError('')
+    setSuccess('')
+
+    try {
+      const text = await file.text()
+      const rows = parseCsv(text)
+      if (rows.length === 0) {
+        setError('CSV kosong/tidak valid. Header wajib: name,level,schoolId')
+        return
+      }
+
+      let created = 0
+      let failed = 0
+      const failureLines: string[] = []
+
+      for (let i = 0; i < rows.length; i += 1) {
+        const row = rows[i]
+        const payload = {
+          name: (row.name || '').trim(),
+          level: (row.level || '').trim(),
+          schoolId: Number((row.schoolid || row.schoolId || '').trim()),
+        }
+
+        if (!payload.name || !payload.level || !Number.isFinite(payload.schoolId)) {
+          failed += 1
+          if (failureLines.length < 10) failureLines.push(`Baris ${i + 2}: data tidak lengkap`)
+          continue
+        }
+
+        try {
+          await apiClient.post('/classes', payload)
+          created += 1
+        } catch (err: any) {
+          failed += 1
+          const reason = err?.response?.data?.error || 'error'
+          if (failureLines.length < 10) failureLines.push(`Baris ${i + 2}: ${reason}`)
+        }
+      }
+
+      await fetchClasses()
+      setSuccess(`Import kelas selesai. Berhasil: ${created}, gagal: ${failed}.`)
+      if (failureLines.length > 0) {
+        setError(failureLines.join(' | '))
+      }
+    } catch (err) {
+      console.error('Import class CSV failed:', err)
+      setError('Gagal membaca file CSV kelas.')
+    } finally {
+      setImporting(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+    }
+  }
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-900">Data Kelas</h1>
-        {user?.role === 'ADMIN' && (
-          <Link href="/dashboard/classes/new" className="btn-primary">
-            + Tambah Kelas
-          </Link>
-        )}
+        <div className="flex items-center gap-2">
+          <button className="btn-secondary" onClick={handleExportCsv} disabled={loading || sortedClasses.length === 0}>
+            Export CSV
+          </button>
+          {isAdmin && (
+            <>
+              <button className="btn-secondary" onClick={handleImportClick} disabled={importing}>
+                {importing ? 'Import...' : 'Import CSV'}
+              </button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".csv,text/csv"
+                className="hidden"
+                onChange={handleImportFile}
+              />
+              <Link href="/dashboard/classes/new" className="btn-primary">
+                + Tambah Kelas
+              </Link>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="card mb-6">
@@ -108,7 +205,9 @@ export default function ClassesPage() {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="input-field flex-1"
           />
-          <button className="btn-primary">Cari</button>
+          <button className="btn-primary" type="button">
+            Cari
+          </button>
         </div>
         <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-gray-600">
           <span>Urutkan:</span>
@@ -136,13 +235,20 @@ export default function ClassesPage() {
         </div>
       </div>
 
+      {error && (
+        <div className="card mb-4">
+          <p className="text-red-600 text-sm">{error}</p>
+        </div>
+      )}
+      {success && (
+        <div className="card mb-4">
+          <p className="text-green-700 text-sm">{success}</p>
+        </div>
+      )}
+
       {loading ? (
         <div className="card text-center py-8">
           <p className="text-gray-600">Memuat data kelas...</p>
-        </div>
-      ) : error ? (
-        <div className="card text-center py-8">
-          <p className="text-red-600">{error}</p>
         </div>
       ) : sortedClasses.length === 0 ? (
         <div className="card text-center py-8">
@@ -159,7 +265,7 @@ export default function ClassesPage() {
                 <Link href={`/dashboard/classes/${kelas.id}/detail`} className="btn-secondary text-sm">
                   Detail
                 </Link>
-                {user?.role === 'ADMIN' && (
+                {isAdmin && (
                   <>
                     <Link href={`/dashboard/classes/${kelas.id}`} className="btn-primary text-sm">
                       Edit
@@ -183,11 +289,7 @@ export default function ClassesPage() {
         Menampilkan {pagedClasses.length} dari {sortedClasses.length} kelas (Total: {classes.length})
       </div>
       <div className="mt-2 flex items-center gap-2">
-        <button
-          className="btn-secondary"
-          disabled={currentPage === 1}
-          onClick={() => setPage((prev) => Math.max(1, prev - 1))}
-        >
+        <button className="btn-secondary" disabled={currentPage === 1} onClick={() => setPage((prev) => Math.max(1, prev - 1))}>
           Sebelumnya
         </button>
         <span className="text-sm text-gray-600">
