@@ -5,6 +5,7 @@ import Link from 'next/link'
 import apiClient from '@/lib/api'
 import { authService } from '@/lib/auth'
 import { downloadCsv, parseCsv, toCsv } from '@/lib/csv'
+import { runWithConcurrency } from '@/lib/batch'
 
 interface Subject {
   id: number
@@ -147,8 +148,11 @@ export default function SubjectsPage() {
         description: (row.description || '').trim() || undefined,
       }))
 
-      const validPayloads = payloads.filter((item) => item.code && item.name)
-      if (validPayloads.length === 0) {
+      const validEntries = payloads
+        .map((item, index) => ({ item, line: index + 2 }))
+        .filter((entry) => entry.item.code && entry.item.name)
+
+      if (validEntries.length === 0) {
         setError('Tidak ada baris valid. Kolom wajib: code dan name.')
         return
       }
@@ -183,21 +187,25 @@ export default function SubjectsPage() {
         return
       }
 
-      let created = 0
-      let failed = 0
-      const failures: ImportErrorRow[] = []
+      const results = await runWithConcurrency(
+        validEntries,
+        async (entry) => {
+          try {
+            await apiClient.post('/subjects', entry.item)
+            return { ok: true, line: entry.line, message: '' }
+          } catch (err: any) {
+            const reason = err?.response?.data?.error || 'error'
+            return { ok: false, line: entry.line, message: `${entry.item.code}: ${reason}` }
+          }
+        },
+        5
+      )
 
-      for (let i = 0; i < validPayloads.length; i += 1) {
-        const item = validPayloads[i]
-        try {
-          await apiClient.post('/subjects', item)
-          created += 1
-        } catch (err: any) {
-          failed += 1
-          const reason = err?.response?.data?.error || 'error'
-          failures.push({ line: i + 2, message: `${item.code}: ${reason}` })
-        }
-      }
+      const failures: ImportErrorRow[] = results
+        .filter((result) => !result.ok)
+        .map((result) => ({ line: result.line, message: result.message }))
+      const created = results.length - failures.length
+      const failed = failures.length
 
       await fetchSubjects()
       setImportErrors(failures)

@@ -103,6 +103,7 @@ powershell -ExecutionPolicy Bypass -File backend\test-comprehensive.ps1
 - Setiap modul punya tombol `Template CSV` di halaman list untuk unduh format siap pakai.
 - Aktifkan `Dry Run` sebelum import untuk validasi CSV tanpa menyimpan data.
 - Gunakan tombol `Error CSV` setelah import untuk unduh daftar baris gagal.
+- Import diproses paralel terbatas (throttled) agar lebih cepat tanpa membebani API.
 - `Subjects` header: `code,name,description`
 - `Classes` header: `name,level,schoolId`
 - `Teachers` header: `nip,name,email,phone,schoolId,username,password`

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import apiClient from '@/lib/api'
 import { authService } from '@/lib/auth'
 import { downloadCsv, parseCsv, toCsv } from '@/lib/csv'
+import { runWithConcurrency } from '@/lib/batch'
 
 interface Student {
   id: number
@@ -222,57 +223,60 @@ export default function StudentsPage() {
         return
       }
 
-      let created = 0
-      let failed = 0
-      const failures: ImportErrorRow[] = []
+      const entries = rows.map((row, index) => ({ row, line: index + 2 }))
+      const results = await runWithConcurrency(
+        entries,
+        async (entry) => {
+          const classId = Number((entry.row.classid || entry.row.classId || '').trim())
+          const schoolId = Number((entry.row.schoolid || entry.row.schoolId || '').trim())
+          const username = (entry.row.username || '').trim()
+          const password = (entry.row.password || '').trim()
+          const email = (entry.row.email || '').trim()
 
-      for (let i = 0; i < rows.length; i += 1) {
-        const row = rows[i]
-        const classId = Number((row.classid || row.classId || '').trim())
-        const schoolId = Number((row.schoolid || row.schoolId || '').trim())
-        const username = (row.username || '').trim()
-        const password = (row.password || '').trim()
-        const email = (row.email || '').trim()
-
-        const payload = {
-          nis: (row.nis || '').trim(),
-          nisn: (row.nisn || '').trim(),
-          name: (row.name || '').trim(),
-          email,
-          phone: (row.phone || '').trim() || undefined,
-          gender: (row.gender || '').trim() || undefined,
-          address: (row.address || '').trim() || undefined,
-          classId,
-          schoolId,
-        }
-
-        if (!payload.nis || !payload.nisn || !payload.name || !payload.email || !Number.isFinite(classId) || !Number.isFinite(schoolId) || !username || !password) {
-          failed += 1
-          failures.push({ line: i + 2, message: 'data tidak lengkap' })
-          continue
-        }
-
-        try {
-          const reg = await apiClient.post('/auth/register', {
-            username,
+          const payload = {
+            nis: (entry.row.nis || '').trim(),
+            nisn: (entry.row.nisn || '').trim(),
+            name: (entry.row.name || '').trim(),
             email,
-            password,
-            role: 'STUDENT',
-          })
-
-          const userId = reg?.data?.id
-          if (!userId) {
-            throw new Error('register_user_failed')
+            phone: (entry.row.phone || '').trim() || undefined,
+            gender: (entry.row.gender || '').trim() || undefined,
+            address: (entry.row.address || '').trim() || undefined,
+            classId,
+            schoolId,
           }
 
-          await apiClient.post('/students', { ...payload, userId })
-          created += 1
-        } catch (err: any) {
-          failed += 1
-          const reason = err?.response?.data?.error || err?.message || 'error'
-          failures.push({ line: i + 2, message: reason })
-        }
-      }
+          if (!payload.nis || !payload.nisn || !payload.name || !payload.email || !Number.isFinite(classId) || !Number.isFinite(schoolId) || !username || !password) {
+            return { ok: false, line: entry.line, message: 'data tidak lengkap' }
+          }
+
+          try {
+            const reg = await apiClient.post('/auth/register', {
+              username,
+              email,
+              password,
+              role: 'STUDENT',
+            })
+
+            const userId = reg?.data?.id
+            if (!userId) {
+              throw new Error('register_user_failed')
+            }
+
+            await apiClient.post('/students', { ...payload, userId })
+            return { ok: true, line: entry.line, message: '' }
+          } catch (err: any) {
+            const reason = err?.response?.data?.error || err?.message || 'error'
+            return { ok: false, line: entry.line, message: reason }
+          }
+        },
+        5
+      )
+
+      const failures: ImportErrorRow[] = results
+        .filter((result) => !result.ok)
+        .map((result) => ({ line: result.line, message: result.message }))
+      const created = results.length - failures.length
+      const failed = failures.length
 
       await fetchStudents()
       setImportErrors(failures)

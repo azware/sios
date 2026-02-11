@@ -5,6 +5,7 @@ import Link from 'next/link'
 import apiClient from '@/lib/api'
 import { authService } from '@/lib/auth'
 import { downloadCsv, parseCsv, toCsv } from '@/lib/csv'
+import { runWithConcurrency } from '@/lib/batch'
 
 interface Class {
   id: number
@@ -179,33 +180,36 @@ export default function ClassesPage() {
         return
       }
 
-      let created = 0
-      let failed = 0
-      const failures: ImportErrorRow[] = []
+      const entries = rows.map((row, index) => ({ row, line: index + 2 }))
+      const results = await runWithConcurrency(
+        entries,
+        async (entry) => {
+          const payload = {
+            name: (entry.row.name || '').trim(),
+            level: (entry.row.level || '').trim(),
+            schoolId: Number((entry.row.schoolid || entry.row.schoolId || '').trim()),
+          }
 
-      for (let i = 0; i < rows.length; i += 1) {
-        const row = rows[i]
-        const payload = {
-          name: (row.name || '').trim(),
-          level: (row.level || '').trim(),
-          schoolId: Number((row.schoolid || row.schoolId || '').trim()),
-        }
+          if (!payload.name || !payload.level || !Number.isFinite(payload.schoolId)) {
+            return { ok: false, line: entry.line, message: 'data tidak lengkap' }
+          }
 
-        if (!payload.name || !payload.level || !Number.isFinite(payload.schoolId)) {
-          failed += 1
-          failures.push({ line: i + 2, message: 'data tidak lengkap' })
-          continue
-        }
+          try {
+            await apiClient.post('/classes', payload)
+            return { ok: true, line: entry.line, message: '' }
+          } catch (err: any) {
+            const reason = err?.response?.data?.error || 'error'
+            return { ok: false, line: entry.line, message: reason }
+          }
+        },
+        5
+      )
 
-        try {
-          await apiClient.post('/classes', payload)
-          created += 1
-        } catch (err: any) {
-          failed += 1
-          const reason = err?.response?.data?.error || 'error'
-          failures.push({ line: i + 2, message: reason })
-        }
-      }
+      const failures: ImportErrorRow[] = results
+        .filter((result) => !result.ok)
+        .map((result) => ({ line: result.line, message: result.message }))
+      const created = results.length - failures.length
+      const failed = failures.length
 
       await fetchClasses()
       setImportErrors(failures)

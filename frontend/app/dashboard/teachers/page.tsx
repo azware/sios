@@ -5,6 +5,7 @@ import Link from 'next/link'
 import apiClient from '@/lib/api'
 import { authService } from '@/lib/auth'
 import { downloadCsv, parseCsv, toCsv } from '@/lib/csv'
+import { runWithConcurrency } from '@/lib/batch'
 
 interface Teacher {
   id: number
@@ -202,51 +203,54 @@ export default function TeachersPage() {
         return
       }
 
-      let created = 0
-      let failed = 0
-      const failures: ImportErrorRow[] = []
-
-      for (let i = 0; i < rows.length; i += 1) {
-        const row = rows[i]
-        const schoolId = Number((row.schoolid || row.schoolId || '').trim())
-        const username = (row.username || '').trim()
-        const password = (row.password || '').trim()
-        const email = (row.email || '').trim()
-        const payload = {
-          nip: (row.nip || '').trim(),
-          name: (row.name || '').trim(),
-          email,
-          phone: (row.phone || '').trim() || undefined,
-          schoolId,
-        }
-
-        if (!payload.nip || !payload.name || !payload.email || !Number.isFinite(schoolId) || !username || !password) {
-          failed += 1
-          failures.push({ line: i + 2, message: 'data tidak lengkap' })
-          continue
-        }
-
-        try {
-          const reg = await apiClient.post('/auth/register', {
-            username,
+      const entries = rows.map((row, index) => ({ row, line: index + 2 }))
+      const results = await runWithConcurrency(
+        entries,
+        async (entry) => {
+          const schoolId = Number((entry.row.schoolid || entry.row.schoolId || '').trim())
+          const username = (entry.row.username || '').trim()
+          const password = (entry.row.password || '').trim()
+          const email = (entry.row.email || '').trim()
+          const payload = {
+            nip: (entry.row.nip || '').trim(),
+            name: (entry.row.name || '').trim(),
             email,
-            password,
-            role: 'TEACHER',
-          })
-
-          const userId = reg?.data?.id
-          if (!userId) {
-            throw new Error('register_user_failed')
+            phone: (entry.row.phone || '').trim() || undefined,
+            schoolId,
           }
 
-          await apiClient.post('/teachers', { ...payload, userId })
-          created += 1
-        } catch (err: any) {
-          failed += 1
-          const reason = err?.response?.data?.error || err?.message || 'error'
-          failures.push({ line: i + 2, message: reason })
-        }
-      }
+          if (!payload.nip || !payload.name || !payload.email || !Number.isFinite(schoolId) || !username || !password) {
+            return { ok: false, line: entry.line, message: 'data tidak lengkap' }
+          }
+
+          try {
+            const reg = await apiClient.post('/auth/register', {
+              username,
+              email,
+              password,
+              role: 'TEACHER',
+            })
+
+            const userId = reg?.data?.id
+            if (!userId) {
+              throw new Error('register_user_failed')
+            }
+
+            await apiClient.post('/teachers', { ...payload, userId })
+            return { ok: true, line: entry.line, message: '' }
+          } catch (err: any) {
+            const reason = err?.response?.data?.error || err?.message || 'error'
+            return { ok: false, line: entry.line, message: reason }
+          }
+        },
+        5
+      )
+
+      const failures: ImportErrorRow[] = results
+        .filter((result) => !result.ok)
+        .map((result) => ({ line: result.line, message: result.message }))
+      const created = results.length - failures.length
+      const failed = failures.length
 
       await fetchTeachers()
       setImportErrors(failures)
