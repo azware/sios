@@ -23,6 +23,7 @@ export default function StudentsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [deletingId, setDeletingId] = useState<number | null>(null)
   const [importing, setImporting] = useState(false)
+  const [dryRunMode, setDryRunMode] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [sortKey, setSortKey] = useState<'name' | 'nis' | 'nisn' | 'email' | 'class'>('name')
@@ -159,6 +160,57 @@ export default function StudentsPage() {
         return
       }
 
+      if (dryRunMode) {
+        let valid = 0
+        let invalid = 0
+        const seenNis = new Set<string>()
+        const seenNisn = new Set<string>()
+        const seenUsername = new Set<string>()
+        const failureLines: string[] = []
+
+        for (let i = 0; i < rows.length; i += 1) {
+          const row = rows[i]
+          const nis = (row.nis || '').trim()
+          const nisn = (row.nisn || '').trim()
+          const name = (row.name || '').trim()
+          const email = (row.email || '').trim()
+          const classId = Number((row.classid || row.classId || '').trim())
+          const schoolId = Number((row.schoolid || row.schoolId || '').trim())
+          const username = (row.username || '').trim()
+          const password = (row.password || '').trim()
+
+          if (!nis || !nisn || !name || !email || !email.includes('@') || !Number.isFinite(classId) || !Number.isFinite(schoolId) || !username || !password) {
+            invalid += 1
+            if (failureLines.length < 10) failureLines.push(`Baris ${i + 2}: field wajib tidak valid`)
+            continue
+          }
+          if (seenNis.has(nis)) {
+            invalid += 1
+            if (failureLines.length < 10) failureLines.push(`Baris ${i + 2}: duplikat NIS di file (${nis})`)
+            continue
+          }
+          if (seenNisn.has(nisn)) {
+            invalid += 1
+            if (failureLines.length < 10) failureLines.push(`Baris ${i + 2}: duplikat NISN di file (${nisn})`)
+            continue
+          }
+          if (seenUsername.has(username)) {
+            invalid += 1
+            if (failureLines.length < 10) failureLines.push(`Baris ${i + 2}: duplikat username di file (${username})`)
+            continue
+          }
+
+          seenNis.add(nis)
+          seenNisn.add(nisn)
+          seenUsername.add(username)
+          valid += 1
+        }
+
+        setSuccess(`Dry run selesai. Valid: ${valid}, invalid: ${invalid}. Tidak ada data disimpan.`)
+        if (failureLines.length > 0) setError(failureLines.join(' | '))
+        return
+      }
+
       let created = 0
       let failed = 0
       const failureLines: string[] = []
@@ -236,6 +288,14 @@ export default function StudentsPage() {
           </button>
           {isAdmin && (
             <>
+              <label className="flex items-center gap-2 text-sm text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={dryRunMode}
+                  onChange={(e) => setDryRunMode(e.target.checked)}
+                />
+                Dry Run
+              </label>
               <button className="btn-secondary" onClick={handleImportClick} disabled={importing}>
                 {importing ? 'Import...' : 'Import CSV'}
               </button>

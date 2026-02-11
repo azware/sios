@@ -19,6 +19,7 @@ export default function ClassesPage() {
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<number | null>(null)
   const [importing, setImporting] = useState(false)
+  const [dryRunMode, setDryRunMode] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
@@ -133,6 +134,40 @@ export default function ClassesPage() {
         return
       }
 
+      if (dryRunMode) {
+        let valid = 0
+        let invalid = 0
+        const seenKeys = new Set<string>()
+        const failureLines: string[] = []
+
+        for (let i = 0; i < rows.length; i += 1) {
+          const row = rows[i]
+          const name = (row.name || '').trim()
+          const level = (row.level || '').trim()
+          const schoolId = Number((row.schoolid || row.schoolId || '').trim())
+
+          if (!name || !level || !Number.isFinite(schoolId)) {
+            invalid += 1
+            if (failureLines.length < 10) failureLines.push(`Baris ${i + 2}: name/level/schoolId tidak valid`)
+            continue
+          }
+
+          const uniqueKey = `${schoolId}:${name.toLowerCase()}`
+          if (seenKeys.has(uniqueKey)) {
+            invalid += 1
+            if (failureLines.length < 10) failureLines.push(`Baris ${i + 2}: duplikat kelas di file (${name})`)
+            continue
+          }
+
+          seenKeys.add(uniqueKey)
+          valid += 1
+        }
+
+        setSuccess(`Dry run selesai. Valid: ${valid}, invalid: ${invalid}. Tidak ada data disimpan.`)
+        if (failureLines.length > 0) setError(failureLines.join(' | '))
+        return
+      }
+
       let created = 0
       let failed = 0
       const failureLines: string[] = []
@@ -188,6 +223,14 @@ export default function ClassesPage() {
           </button>
           {isAdmin && (
             <>
+              <label className="flex items-center gap-2 text-sm text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={dryRunMode}
+                  onChange={(e) => setDryRunMode(e.target.checked)}
+                />
+                Dry Run
+              </label>
               <button className="btn-secondary" onClick={handleImportClick} disabled={importing}>
                 {importing ? 'Import...' : 'Import CSV'}
               </button>

@@ -20,6 +20,7 @@ export default function TeachersPage() {
   const [loading, setLoading] = useState(true)
   const [deletingId, setDeletingId] = useState<number | null>(null)
   const [importing, setImporting] = useState(false)
+  const [dryRunMode, setDryRunMode] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
@@ -148,6 +149,48 @@ export default function TeachersPage() {
         return
       }
 
+      if (dryRunMode) {
+        let valid = 0
+        let invalid = 0
+        const seenNip = new Set<string>()
+        const seenUsername = new Set<string>()
+        const failureLines: string[] = []
+
+        for (let i = 0; i < rows.length; i += 1) {
+          const row = rows[i]
+          const nip = (row.nip || '').trim()
+          const name = (row.name || '').trim()
+          const email = (row.email || '').trim()
+          const schoolId = Number((row.schoolid || row.schoolId || '').trim())
+          const username = (row.username || '').trim()
+          const password = (row.password || '').trim()
+
+          if (!nip || !name || !email || !email.includes('@') || !Number.isFinite(schoolId) || !username || !password) {
+            invalid += 1
+            if (failureLines.length < 10) failureLines.push(`Baris ${i + 2}: field wajib tidak valid`)
+            continue
+          }
+          if (seenNip.has(nip)) {
+            invalid += 1
+            if (failureLines.length < 10) failureLines.push(`Baris ${i + 2}: duplikat NIP di file (${nip})`)
+            continue
+          }
+          if (seenUsername.has(username)) {
+            invalid += 1
+            if (failureLines.length < 10) failureLines.push(`Baris ${i + 2}: duplikat username di file (${username})`)
+            continue
+          }
+
+          seenNip.add(nip)
+          seenUsername.add(username)
+          valid += 1
+        }
+
+        setSuccess(`Dry run selesai. Valid: ${valid}, invalid: ${invalid}. Tidak ada data disimpan.`)
+        if (failureLines.length > 0) setError(failureLines.join(' | '))
+        return
+      }
+
       let created = 0
       let failed = 0
       const failureLines: string[] = []
@@ -219,6 +262,14 @@ export default function TeachersPage() {
           </button>
           {isAdmin && (
             <>
+              <label className="flex items-center gap-2 text-sm text-gray-700">
+                <input
+                  type="checkbox"
+                  checked={dryRunMode}
+                  onChange={(e) => setDryRunMode(e.target.checked)}
+                />
+                Dry Run
+              </label>
               <button className="btn-secondary" onClick={handleImportClick} disabled={importing}>
                 {importing ? 'Import...' : 'Import CSV'}
               </button>
