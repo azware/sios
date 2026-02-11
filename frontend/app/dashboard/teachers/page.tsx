@@ -15,6 +15,11 @@ interface Teacher {
   schoolId?: number
 }
 
+interface ImportErrorRow {
+  line: number
+  message: string
+}
+
 export default function TeachersPage() {
   const [teachers, setTeachers] = useState<Teacher[]>([])
   const [loading, setLoading] = useState(true)
@@ -28,6 +33,7 @@ export default function TeachersPage() {
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+  const [importErrors, setImportErrors] = useState<ImportErrorRow[]>([])
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const user = authService.getCurrentUser()
   const isAdmin = user?.role === 'ADMIN'
@@ -130,6 +136,7 @@ export default function TeachersPage() {
   const handleImportClick = () => {
     setError('')
     setSuccess('')
+    setImportErrors([])
     fileInputRef.current?.click()
   }
 
@@ -140,6 +147,7 @@ export default function TeachersPage() {
     setImporting(true)
     setError('')
     setSuccess('')
+    setImportErrors([])
 
     try {
       const text = await file.text()
@@ -154,7 +162,7 @@ export default function TeachersPage() {
         let invalid = 0
         const seenNip = new Set<string>()
         const seenUsername = new Set<string>()
-        const failureLines: string[] = []
+        const failures: ImportErrorRow[] = []
 
         for (let i = 0; i < rows.length; i += 1) {
           const row = rows[i]
@@ -167,17 +175,17 @@ export default function TeachersPage() {
 
           if (!nip || !name || !email || !email.includes('@') || !Number.isFinite(schoolId) || !username || !password) {
             invalid += 1
-            if (failureLines.length < 10) failureLines.push(`Baris ${i + 2}: field wajib tidak valid`)
+            failures.push({ line: i + 2, message: 'field wajib tidak valid' })
             continue
           }
           if (seenNip.has(nip)) {
             invalid += 1
-            if (failureLines.length < 10) failureLines.push(`Baris ${i + 2}: duplikat NIP di file (${nip})`)
+            failures.push({ line: i + 2, message: `duplikat NIP di file (${nip})` })
             continue
           }
           if (seenUsername.has(username)) {
             invalid += 1
-            if (failureLines.length < 10) failureLines.push(`Baris ${i + 2}: duplikat username di file (${username})`)
+            failures.push({ line: i + 2, message: `duplikat username di file (${username})` })
             continue
           }
 
@@ -187,13 +195,16 @@ export default function TeachersPage() {
         }
 
         setSuccess(`Dry run selesai. Valid: ${valid}, invalid: ${invalid}. Tidak ada data disimpan.`)
-        if (failureLines.length > 0) setError(failureLines.join(' | '))
+        setImportErrors(failures)
+        if (failures.length > 0) {
+          setError(failures.slice(0, 10).map((item) => `Baris ${item.line}: ${item.message}`).join(' | '))
+        }
         return
       }
 
       let created = 0
       let failed = 0
-      const failureLines: string[] = []
+      const failures: ImportErrorRow[] = []
 
       for (let i = 0; i < rows.length; i += 1) {
         const row = rows[i]
@@ -211,7 +222,7 @@ export default function TeachersPage() {
 
         if (!payload.nip || !payload.name || !payload.email || !Number.isFinite(schoolId) || !username || !password) {
           failed += 1
-          if (failureLines.length < 10) failureLines.push(`Baris ${i + 2}: data tidak lengkap`)
+          failures.push({ line: i + 2, message: 'data tidak lengkap' })
           continue
         }
 
@@ -233,13 +244,14 @@ export default function TeachersPage() {
         } catch (err: any) {
           failed += 1
           const reason = err?.response?.data?.error || err?.message || 'error'
-          if (failureLines.length < 10) failureLines.push(`Baris ${i + 2}: ${reason}`)
+          failures.push({ line: i + 2, message: reason })
         }
       }
 
       await fetchTeachers()
+      setImportErrors(failures)
       setSuccess(`Import guru selesai. Berhasil: ${created}, gagal: ${failed}.`)
-      if (failureLines.length > 0) setError(failureLines.join(' | '))
+      if (failures.length > 0) setError(failures.slice(0, 10).map((item) => `Baris ${item.line}: ${item.message}`).join(' | '))
     } catch (err) {
       console.error('Import teacher CSV failed:', err)
       setError('Gagal membaca file CSV guru.')
@@ -247,6 +259,15 @@ export default function TeachersPage() {
       setImporting(false)
       if (fileInputRef.current) fileInputRef.current.value = ''
     }
+  }
+
+  const handleDownloadErrorCsv = () => {
+    if (importErrors.length === 0) return
+    const headers = ['line', 'error']
+    const rows = importErrors.map((item) => [String(item.line), item.message])
+    const csv = toCsv(headers, rows)
+    const stamp = new Date().toISOString().slice(0, 19).replace(/[-:T]/g, '')
+    downloadCsv(`teachers_import_errors_${stamp}.csv`, csv)
   }
 
   return (
@@ -272,6 +293,9 @@ export default function TeachersPage() {
               </label>
               <button className="btn-secondary" onClick={handleImportClick} disabled={importing}>
                 {importing ? 'Import...' : 'Import CSV'}
+              </button>
+              <button className="btn-secondary" onClick={handleDownloadErrorCsv} disabled={importErrors.length === 0}>
+                Error CSV
               </button>
               <input
                 ref={fileInputRef}

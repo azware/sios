@@ -13,6 +13,11 @@ interface Subject {
   description?: string
 }
 
+interface ImportErrorRow {
+  line: number
+  message: string
+}
+
 export default function SubjectsPage() {
   const [subjects, setSubjects] = useState<Subject[]>([])
   const [loading, setLoading] = useState(true)
@@ -26,6 +31,7 @@ export default function SubjectsPage() {
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+  const [importErrors, setImportErrors] = useState<ImportErrorRow[]>([])
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const user = authService.getCurrentUser()
   const isAdmin = user?.role === 'ADMIN'
@@ -114,6 +120,7 @@ export default function SubjectsPage() {
   const handleImportClick = () => {
     setError('')
     setSuccess('')
+    setImportErrors([])
     fileInputRef.current?.click()
   }
 
@@ -124,6 +131,7 @@ export default function SubjectsPage() {
     setImporting(true)
     setError('')
     setSuccess('')
+    setImportErrors([])
 
     try {
       const text = await file.text()
@@ -149,18 +157,18 @@ export default function SubjectsPage() {
         let valid = 0
         let invalid = 0
         const seenCodes = new Set<string>()
-        const failureLines: string[] = []
+        const failures: ImportErrorRow[] = []
 
         for (let i = 0; i < payloads.length; i += 1) {
           const item = payloads[i]
           if (!item.code || !item.name) {
             invalid += 1
-            if (failureLines.length < 10) failureLines.push(`Baris ${i + 2}: code/name wajib diisi`)
+            failures.push({ line: i + 2, message: 'code/name wajib diisi' })
             continue
           }
           if (seenCodes.has(item.code)) {
             invalid += 1
-            if (failureLines.length < 10) failureLines.push(`Baris ${i + 2}: duplikat code di file (${item.code})`)
+            failures.push({ line: i + 2, message: `duplikat code di file (${item.code})` })
             continue
           }
           seenCodes.add(item.code)
@@ -168,13 +176,16 @@ export default function SubjectsPage() {
         }
 
         setSuccess(`Dry run selesai. Valid: ${valid}, invalid: ${invalid}. Tidak ada data disimpan.`)
-        if (failureLines.length > 0) setError(failureLines.join(' | '))
+        setImportErrors(failures)
+        if (failures.length > 0) {
+          setError(failures.slice(0, 10).map((item) => `Baris ${item.line}: ${item.message}`).join(' | '))
+        }
         return
       }
 
       let created = 0
       let failed = 0
-      const failureLines: string[] = []
+      const failures: ImportErrorRow[] = []
 
       for (let i = 0; i < validPayloads.length; i += 1) {
         const item = validPayloads[i]
@@ -184,20 +195,18 @@ export default function SubjectsPage() {
         } catch (err: any) {
           failed += 1
           const reason = err?.response?.data?.error || 'error'
-          if (failureLines.length < 10) {
-            failureLines.push(`Baris ${i + 2} (${item.code}): ${reason}`)
-          }
+          failures.push({ line: i + 2, message: `${item.code}: ${reason}` })
         }
       }
 
       await fetchSubjects()
+      setImportErrors(failures)
 
       if (failed === 0) {
         setSuccess(`Import selesai. ${created} mata pelajaran berhasil dibuat.`)
       } else {
-        const details = failureLines.join(' | ')
         setSuccess(`Import selesai. Berhasil: ${created}, gagal: ${failed}.`)
-        setError(details)
+        setError(failures.slice(0, 10).map((item) => `Baris ${item.line}: ${item.message}`).join(' | '))
       }
     } catch (err) {
       console.error('Import CSV failed:', err)
@@ -206,6 +215,15 @@ export default function SubjectsPage() {
       setImporting(false)
       if (fileInputRef.current) fileInputRef.current.value = ''
     }
+  }
+
+  const handleDownloadErrorCsv = () => {
+    if (importErrors.length === 0) return
+    const headers = ['line', 'error']
+    const rows = importErrors.map((item) => [String(item.line), item.message])
+    const csv = toCsv(headers, rows)
+    const stamp = new Date().toISOString().slice(0, 19).replace(/[-:T]/g, '')
+    downloadCsv(`subjects_import_errors_${stamp}.csv`, csv)
   }
 
   return (
@@ -231,6 +249,9 @@ export default function SubjectsPage() {
               </label>
               <button className="btn-secondary" onClick={handleImportClick} disabled={importing}>
                 {importing ? 'Import...' : 'Import CSV'}
+              </button>
+              <button className="btn-secondary" onClick={handleDownloadErrorCsv} disabled={importErrors.length === 0}>
+                Error CSV
               </button>
               <input
                 ref={fileInputRef}

@@ -28,6 +28,7 @@
 - Added onboarding wizard for admin (`/dashboard/onboarding`) to setup first school, class, and subject
 - Added auto-redirect for admin to onboarding when setup awal belum lengkap
 - Added CSV export/import on Subjects, Students, Teachers, and Classes pages
+- Added CSV import hardening: template download, dry-run validation, and error report export
 
 ## Next Steps
 1. CSV export/import
