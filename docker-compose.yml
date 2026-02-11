@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: schooldb
+      POSTGRES_USER: schooluser
+      POSTGRES_PASSWORD: schoolpass
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: ./backend
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://schooluser:schoolpass@db:5432/schooldb
+      JWT_SECRET: supersecret_jwt_key
+      NODE_ENV: development
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./backend:/app
+    command: ["npm", "run", "dev"]
+
+volumes:
+  db-data:
