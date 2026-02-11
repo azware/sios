@@ -29,6 +29,7 @@ SIOS adalah aplikasi Sistem Informasi Operasional Sekolah untuk mengelola data s
 - CRUD: Students, Teachers, Classes, Subjects, Schools, Attendance, Grades, Payments
 - Authentication: JWT login/register
 - Role-based UI and route protection (frontend)
+- Admin onboarding wizard (setup sekolah + kelas pertama)
 - Detail pages (student/teacher/class/school)
 - Search, sort, pagination on list pages
 - Unique conflict feedback (NIS/NISN/email/code/name)
