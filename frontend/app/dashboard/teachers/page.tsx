@@ -6,6 +6,7 @@ import apiClient from '@/lib/api'
 import { authService } from '@/lib/auth'
 import { downloadCsv, parseCsv, toCsv } from '@/lib/csv'
 import { runWithConcurrency } from '@/lib/batch'
+import { getImportHistory, ImportHistoryErrorRow, ImportHistoryItem, pushImportHistory } from '@/lib/import-history'
 
 interface Teacher {
   id: number
@@ -19,6 +20,7 @@ interface Teacher {
 interface ImportErrorRow {
   line: number
   message: string
+  row?: Record<string, string>
 }
 
 export default function TeachersPage() {
@@ -35,6 +37,8 @@ export default function TeachersPage() {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
   const [importErrors, setImportErrors] = useState<ImportErrorRow[]>([])
+  const [importHistory, setImportHistory] = useState<ImportHistoryItem[]>([])
+  const [lastFailedRows, setLastFailedRows] = useState<Array<{ line: number; row: Record<string, string> }>>([])
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const user = authService.getCurrentUser()
   const isAdmin = user?.role === 'ADMIN'
@@ -53,7 +57,24 @@ export default function TeachersPage() {
 
   useEffect(() => {
     fetchTeachers()
+    setImportHistory(getImportHistory('teachers'))
   }, [])
+
+  const saveImportHistory = (fileName: string, dryRun: boolean, total: number, successCount: number, failures: ImportErrorRow[]) => {
+    const errors: ImportHistoryErrorRow[] = failures.map((item) => ({ line: item.line, message: item.message }))
+    pushImportHistory('teachers', {
+      id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+      module: 'teachers',
+      fileName,
+      createdAt: new Date().toISOString(),
+      dryRun,
+      total,
+      success: successCount,
+      failed: failures.length,
+      errors,
+    })
+    setImportHistory(getImportHistory('teachers'))
+  }
 
   useEffect(() => {
     setPage(1)
@@ -176,17 +197,17 @@ export default function TeachersPage() {
 
           if (!nip || !name || !email || !email.includes('@') || !Number.isFinite(schoolId) || !username || !password) {
             invalid += 1
-            failures.push({ line: i + 2, message: 'field wajib tidak valid' })
+            failures.push({ line: i + 2, message: 'field wajib tidak valid', row: row })
             continue
           }
           if (seenNip.has(nip)) {
             invalid += 1
-            failures.push({ line: i + 2, message: `duplikat NIP di file (${nip})` })
+            failures.push({ line: i + 2, message: `duplikat NIP di file (${nip})`, row: row })
             continue
           }
           if (seenUsername.has(username)) {
             invalid += 1
-            failures.push({ line: i + 2, message: `duplikat username di file (${username})` })
+            failures.push({ line: i + 2, message: `duplikat username di file (${username})`, row: row })
             continue
           }
 
@@ -197,6 +218,8 @@ export default function TeachersPage() {
 
         setSuccess(`Dry run selesai. Valid: ${valid}, invalid: ${invalid}. Tidak ada data disimpan.`)
         setImportErrors(failures)
+        setLastFailedRows(failures.filter((item) => item.row).map((item) => ({ line: item.line, row: item.row as Record<string, string> })))
+        saveImportHistory(file.name, true, rows.length, valid, failures)
         if (failures.length > 0) {
           setError(failures.slice(0, 10).map((item) => `Baris ${item.line}: ${item.message}`).join(' | '))
         }
@@ -220,7 +243,7 @@ export default function TeachersPage() {
           }
 
           if (!payload.nip || !payload.name || !payload.email || !Number.isFinite(schoolId) || !username || !password) {
-            return { ok: false, line: entry.line, message: 'data tidak lengkap' }
+            return { ok: false, line: entry.line, message: 'data tidak lengkap', row: entry.row }
           }
 
           try {
@@ -237,10 +260,10 @@ export default function TeachersPage() {
             }
 
             await apiClient.post('/teachers', { ...payload, userId })
-            return { ok: true, line: entry.line, message: '' }
+            return { ok: true, line: entry.line, message: '', row: entry.row }
           } catch (err: any) {
             const reason = err?.response?.data?.error || err?.message || 'error'
-            return { ok: false, line: entry.line, message: reason }
+            return { ok: false, line: entry.line, message: reason, row: entry.row }
           }
         },
         5
@@ -248,12 +271,14 @@ export default function TeachersPage() {
 
       const failures: ImportErrorRow[] = results
         .filter((result) => !result.ok)
-        .map((result) => ({ line: result.line, message: result.message }))
+        .map((result) => ({ line: result.line, message: result.message, row: result.row }))
       const created = results.length - failures.length
       const failed = failures.length
 
       await fetchTeachers()
       setImportErrors(failures)
+      setLastFailedRows(failures.filter((item) => item.row).map((item) => ({ line: item.line, row: item.row as Record<string, string> })))
+      saveImportHistory(file.name, false, results.length, created, failures)
       setSuccess(`Import guru selesai. Berhasil: ${created}, gagal: ${failed}.`)
       if (failures.length > 0) setError(failures.slice(0, 10).map((item) => `Baris ${item.line}: ${item.message}`).join(' | '))
     } catch (err) {
@@ -272,6 +297,65 @@ export default function TeachersPage() {
     const csv = toCsv(headers, rows)
     const stamp = new Date().toISOString().slice(0, 19).replace(/[-:T]/g, '')
     downloadCsv(`teachers_import_errors_${stamp}.csv`, csv)
+  }
+
+  const handleRetryFailedRows = async () => {
+    if (lastFailedRows.length === 0) return
+    setImporting(true)
+    setError('')
+    setSuccess('')
+    setImportErrors([])
+    try {
+      const entries = lastFailedRows.map((entry) => ({ row: entry.row, line: entry.line }))
+      const results = await runWithConcurrency(
+        entries,
+        async (entry) => {
+          const schoolId = Number((entry.row.schoolid || entry.row.schoolId || '').trim())
+          const username = (entry.row.username || '').trim()
+          const password = (entry.row.password || '').trim()
+          const email = (entry.row.email || '').trim()
+          const payload = {
+            nip: (entry.row.nip || '').trim(),
+            name: (entry.row.name || '').trim(),
+            email,
+            phone: (entry.row.phone || '').trim() || undefined,
+            schoolId,
+          }
+          if (!payload.nip || !payload.name || !payload.email || !Number.isFinite(schoolId) || !username || !password) {
+            return { ok: false, line: entry.line, message: 'data tidak lengkap', row: entry.row }
+          }
+          try {
+            const reg = await apiClient.post('/auth/register', {
+              username,
+              email,
+              password,
+              role: 'TEACHER',
+            })
+            const userId = reg?.data?.id
+            if (!userId) throw new Error('register_user_failed')
+            await apiClient.post('/teachers', { ...payload, userId })
+            return { ok: true, line: entry.line, message: '', row: entry.row }
+          } catch (err: any) {
+            const reason = err?.response?.data?.error || err?.message || 'error'
+            return { ok: false, line: entry.line, message: reason, row: entry.row }
+          }
+        },
+        5
+      )
+      const failures: ImportErrorRow[] = results.filter((r) => !r.ok).map((r) => ({ line: r.line, message: r.message, row: r.row }))
+      const created = results.length - failures.length
+      await fetchTeachers()
+      setImportErrors(failures)
+      setLastFailedRows(failures.filter((item) => item.row).map((item) => ({ line: item.line, row: item.row as Record<string, string> })))
+      saveImportHistory('retry_failed_rows', false, results.length, created, failures)
+      setSuccess(`Retry selesai. Berhasil: ${created}, gagal: ${failures.length}.`)
+      if (failures.length > 0) setError(failures.slice(0, 10).map((item) => `Baris ${item.line}: ${item.message}`).join(' | '))
+    } catch (err) {
+      console.error('Retry teacher failed rows error:', err)
+      setError('Gagal menjalankan retry baris gagal.')
+    } finally {
+      setImporting(false)
+    }
   }
 
   return (
@@ -300,6 +384,9 @@ export default function TeachersPage() {
               </button>
               <button className="btn-secondary" onClick={handleDownloadErrorCsv} disabled={importErrors.length === 0}>
                 Error CSV
+              </button>
+              <button className="btn-secondary" onClick={handleRetryFailedRows} disabled={importing || lastFailedRows.length === 0}>
+                Retry Gagal
               </button>
               <input
                 ref={fileInputRef}
@@ -368,6 +455,21 @@ export default function TeachersPage() {
           <p className="text-green-700 text-sm">{success}</p>
         </div>
       )}
+      <div className="card mb-4">
+        <p className="text-sm font-semibold text-gray-800 mb-2">Riwayat Import</p>
+        {importHistory.length === 0 ? (
+          <p className="text-sm text-gray-500">Belum ada riwayat import.</p>
+        ) : (
+          <ul className="space-y-1 text-sm text-gray-700">
+            {importHistory.slice(0, 5).map((item) => (
+              <li key={item.id}>
+                {new Date(item.createdAt).toLocaleString()} | {item.fileName} | ok: {item.success} gagal: {item.failed}
+                {item.dryRun ? ' (dry-run)' : ''}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
       {loading ? (
         <div className="card text-center py-8">

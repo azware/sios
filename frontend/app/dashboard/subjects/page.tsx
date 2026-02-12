@@ -6,6 +6,7 @@ import apiClient from '@/lib/api'
 import { authService } from '@/lib/auth'
 import { downloadCsv, parseCsv, toCsv } from '@/lib/csv'
 import { runWithConcurrency } from '@/lib/batch'
+import { getImportHistory, ImportHistoryErrorRow, ImportHistoryItem, pushImportHistory } from '@/lib/import-history'
 
 interface Subject {
   id: number
@@ -17,6 +18,7 @@ interface Subject {
 interface ImportErrorRow {
   line: number
   message: string
+  row?: Record<string, string>
 }
 
 export default function SubjectsPage() {
@@ -33,6 +35,8 @@ export default function SubjectsPage() {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
   const [importErrors, setImportErrors] = useState<ImportErrorRow[]>([])
+  const [importHistory, setImportHistory] = useState<ImportHistoryItem[]>([])
+  const [lastFailedRows, setLastFailedRows] = useState<Array<{ line: number; row: Record<string, string> }>>([])
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const user = authService.getCurrentUser()
   const isAdmin = user?.role === 'ADMIN'
@@ -51,7 +55,27 @@ export default function SubjectsPage() {
 
   useEffect(() => {
     fetchSubjects()
+    setImportHistory(getImportHistory('subjects'))
   }, [])
+
+  const saveImportHistory = (fileName: string, dryRun: boolean, total: number, successCount: number, failures: ImportErrorRow[]) => {
+    const errors: ImportHistoryErrorRow[] = failures.map((item) => ({
+      line: item.line,
+      message: item.message,
+    }))
+    pushImportHistory('subjects', {
+      id: `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+      module: 'subjects',
+      fileName,
+      createdAt: new Date().toISOString(),
+      dryRun,
+      total,
+      success: successCount,
+      failed: failures.length,
+      errors,
+    })
+    setImportHistory(getImportHistory('subjects'))
+  }
 
   useEffect(() => {
     setPage(1)
@@ -149,7 +173,7 @@ export default function SubjectsPage() {
       }))
 
       const validEntries = payloads
-        .map((item, index) => ({ item, line: index + 2 }))
+        .map((item, index) => ({ item, line: index + 2, row: rows[index] }))
         .filter((entry) => entry.item.code && entry.item.name)
 
       if (validEntries.length === 0) {
@@ -167,12 +191,12 @@ export default function SubjectsPage() {
           const item = payloads[i]
           if (!item.code || !item.name) {
             invalid += 1
-            failures.push({ line: i + 2, message: 'code/name wajib diisi' })
+            failures.push({ line: i + 2, message: 'code/name wajib diisi', row: rows[i] })
             continue
           }
           if (seenCodes.has(item.code)) {
             invalid += 1
-            failures.push({ line: i + 2, message: `duplikat code di file (${item.code})` })
+            failures.push({ line: i + 2, message: `duplikat code di file (${item.code})`, row: rows[i] })
             continue
           }
           seenCodes.add(item.code)
@@ -181,6 +205,8 @@ export default function SubjectsPage() {
 
         setSuccess(`Dry run selesai. Valid: ${valid}, invalid: ${invalid}. Tidak ada data disimpan.`)
         setImportErrors(failures)
+        setLastFailedRows(failures.filter((item) => item.row).map((item) => ({ line: item.line, row: item.row as Record<string, string> })))
+        saveImportHistory(file.name, true, payloads.length, valid, failures)
         if (failures.length > 0) {
           setError(failures.slice(0, 10).map((item) => `Baris ${item.line}: ${item.message}`).join(' | '))
         }
@@ -192,10 +218,10 @@ export default function SubjectsPage() {
         async (entry) => {
           try {
             await apiClient.post('/subjects', entry.item)
-            return { ok: true, line: entry.line, message: '' }
+            return { ok: true, line: entry.line, message: '', row: entry.row }
           } catch (err: any) {
             const reason = err?.response?.data?.error || 'error'
-            return { ok: false, line: entry.line, message: `${entry.item.code}: ${reason}` }
+            return { ok: false, line: entry.line, message: `${entry.item.code}: ${reason}`, row: entry.row }
           }
         },
         5
@@ -203,12 +229,14 @@ export default function SubjectsPage() {
 
       const failures: ImportErrorRow[] = results
         .filter((result) => !result.ok)
-        .map((result) => ({ line: result.line, message: result.message }))
+        .map((result) => ({ line: result.line, message: result.message, row: result.row }))
       const created = results.length - failures.length
       const failed = failures.length
 
       await fetchSubjects()
       setImportErrors(failures)
+      setLastFailedRows(failures.filter((item) => item.row).map((item) => ({ line: item.line, row: item.row as Record<string, string> })))
+      saveImportHistory(file.name, false, results.length, created, failures)
 
       if (failed === 0) {
         setSuccess(`Import selesai. ${created} mata pelajaran berhasil dibuat.`)
@@ -232,6 +260,63 @@ export default function SubjectsPage() {
     const csv = toCsv(headers, rows)
     const stamp = new Date().toISOString().slice(0, 19).replace(/[-:T]/g, '')
     downloadCsv(`subjects_import_errors_${stamp}.csv`, csv)
+  }
+
+  const handleRetryFailedRows = async () => {
+    if (lastFailedRows.length === 0) return
+
+    setImporting(true)
+    setError('')
+    setSuccess('')
+    setImportErrors([])
+
+    try {
+      const entries = lastFailedRows.map((entry) => ({
+        line: entry.line,
+        row: entry.row,
+        item: {
+          code: (entry.row.code || '').trim().toUpperCase(),
+          name: (entry.row.name || '').trim(),
+          description: (entry.row.description || '').trim() || undefined,
+        },
+      }))
+
+      const results = await runWithConcurrency(
+        entries,
+        async (entry) => {
+          if (!entry.item.code || !entry.item.name) {
+            return { ok: false, line: entry.line, message: 'code/name wajib diisi', row: entry.row }
+          }
+          try {
+            await apiClient.post('/subjects', entry.item)
+            return { ok: true, line: entry.line, message: '', row: entry.row }
+          } catch (err: any) {
+            const reason = err?.response?.data?.error || 'error'
+            return { ok: false, line: entry.line, message: `${entry.item.code}: ${reason}`, row: entry.row }
+          }
+        },
+        5
+      )
+
+      const failures: ImportErrorRow[] = results
+        .filter((result) => !result.ok)
+        .map((result) => ({ line: result.line, message: result.message, row: result.row }))
+      const created = results.length - failures.length
+
+      await fetchSubjects()
+      setImportErrors(failures)
+      setLastFailedRows(failures.filter((item) => item.row).map((item) => ({ line: item.line, row: item.row as Record<string, string> })))
+      saveImportHistory('retry_failed_rows', false, results.length, created, failures)
+      setSuccess(`Retry selesai. Berhasil: ${created}, gagal: ${failures.length}.`)
+      if (failures.length > 0) {
+        setError(failures.slice(0, 10).map((item) => `Baris ${item.line}: ${item.message}`).join(' | '))
+      }
+    } catch (err) {
+      console.error('Retry failed rows error:', err)
+      setError('Gagal menjalankan retry baris gagal.')
+    } finally {
+      setImporting(false)
+    }
   }
 
   return (
@@ -260,6 +345,9 @@ export default function SubjectsPage() {
               </button>
               <button className="btn-secondary" onClick={handleDownloadErrorCsv} disabled={importErrors.length === 0}>
                 Error CSV
+              </button>
+              <button className="btn-secondary" onClick={handleRetryFailedRows} disabled={importing || lastFailedRows.length === 0}>
+                Retry Gagal
               </button>
               <input
                 ref={fileInputRef}
@@ -325,6 +413,21 @@ export default function SubjectsPage() {
           <p className="text-green-700 text-sm">{success}</p>
         </div>
       )}
+      <div className="card mb-4">
+        <p className="text-sm font-semibold text-gray-800 mb-2">Riwayat Import</p>
+        {importHistory.length === 0 ? (
+          <p className="text-sm text-gray-500">Belum ada riwayat import.</p>
+        ) : (
+          <ul className="space-y-1 text-sm text-gray-700">
+            {importHistory.slice(0, 5).map((item) => (
+              <li key={item.id}>
+                {new Date(item.createdAt).toLocaleString()} | {item.fileName} | ok: {item.success} gagal: {item.failed}
+                {item.dryRun ? ' (dry-run)' : ''}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
       {loading ? (
         <div className="card text-center py-8">Memuat...</div>

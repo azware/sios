@@ -121,6 +121,8 @@ powershell -ExecutionPolicy Bypass -File scripts\db-restore.ps1 -DumpFile .\back
 - Setiap modul punya tombol `Template CSV` di halaman list untuk unduh format siap pakai.
 - Aktifkan `Dry Run` sebelum import untuk validasi CSV tanpa menyimpan data.
 - Gunakan tombol `Error CSV` setelah import untuk unduh daftar baris gagal.
+- Gunakan tombol `Retry Gagal` untuk memproses ulang baris yang gagal (tanpa upload ulang file di sesi yang sama).
+- Riwayat import (20 terakhir per modul) disimpan lokal di browser untuk jejak proses.
 - Import diproses paralel terbatas (throttled) agar lebih cepat tanpa membebani API.
 - `Subjects` header: `code,name,description`
 - `Classes` header: `name,level,schoolId`
