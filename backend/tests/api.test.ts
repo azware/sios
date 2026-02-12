@@ -1,5 +1,6 @@
 import request from "supertest";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { prismaMock } = vi.hoisted(() => ({
@@ -120,5 +121,49 @@ describe("API baseline", () => {
 
     expect(protectedRes.status).toBe(200);
     expect(Array.isArray(protectedRes.body)).toBe(true);
+  });
+
+  it("GET /api/audit-logs should return 403 for non-admin role", async () => {
+    const teacherToken = jwt.sign({ id: 201, role: "TEACHER" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 201,
+      username: "teacher_flow",
+      email: "teacher_flow@sios.local",
+      role: "TEACHER",
+      password: "hashed",
+    });
+
+    const res = await request(app).get("/api/audit-logs").set("Authorization", `Bearer ${teacherToken}`);
+    expect(res.status).toBe(403);
+  });
+
+  it("GET /api/users should return 403 for student role", async () => {
+    const studentToken = jwt.sign({ id: 301, role: "STUDENT" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 301,
+      username: "student_flow",
+      email: "student_flow@sios.local",
+      role: "STUDENT",
+      password: "hashed",
+    });
+
+    const res = await request(app).get("/api/users").set("Authorization", `Bearer ${studentToken}`);
+    expect(res.status).toBe(403);
+  });
+
+  it("GET /api/users should return 200 for admin role", async () => {
+    const adminToken = jwt.sign({ id: 401, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 401,
+      username: "admin_list",
+      email: "admin_list@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+    prismaMock.user.findMany = vi.fn().mockResolvedValueOnce([]);
+
+    const res = await request(app).get("/api/users").set("Authorization", `Bearer ${adminToken}`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
   });
 });
