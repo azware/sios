@@ -52,7 +52,7 @@ router.get("/subject/:subjectId", authorize(["ADMIN", "TEACHER"]), async (req, r
     const grades = await prisma.grade.findMany({
       where: { subjectId },
       include: {
-        student: { select: { nis, name: true } },
+        student: { select: { nis: true, name: true } },
         subject: true,
         teacher: { select: { name: true } },
       },
