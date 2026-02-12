@@ -10,6 +10,9 @@ interface DashboardStats {
   totalTeachers: number
   totalClasses: number
   totalPayments: number
+  attendanceRateToday: number
+  overduePayments: number
+  averageGrade: number
 }
 
 interface SetupState {
@@ -23,6 +26,9 @@ export default function DashboardPage() {
     totalTeachers: 0,
     totalClasses: 0,
     totalPayments: 0,
+    attendanceRateToday: 0,
+    overduePayments: 0,
+    averageGrade: 0,
   })
   const [setup, setSetup] = useState<SetupState>({
     isAdmin: false,
@@ -36,20 +42,19 @@ export default function DashboardPage() {
       const isAdmin = currentUser?.role === 'ADMIN'
 
       try {
-        const [studentsRes, teachersRes, classesRes, paymentsRes] = await Promise.all([
-          apiClient.get('/students'),
-          apiClient.get('/teachers'),
-          apiClient.get('/classes'),
-          apiClient.get('/payments'),
-        ])
+        const kpiRes = await apiClient.get('/dashboard/kpis')
+        const kpi = kpiRes.data || {}
 
-        const classCount = Array.isArray(classesRes.data) ? classesRes.data.length : 0
+        const classCount = Number(kpi.totalClasses || 0)
 
         setStats({
-          totalStudents: Array.isArray(studentsRes.data) ? studentsRes.data.length : 0,
-          totalTeachers: Array.isArray(teachersRes.data) ? teachersRes.data.length : 0,
+          totalStudents: Number(kpi.totalStudents || 0),
+          totalTeachers: Number(kpi.totalTeachers || 0),
           totalClasses: classCount,
-          totalPayments: Array.isArray(paymentsRes.data) ? paymentsRes.data.length : 0,
+          totalPayments: Number(kpi.totalPayments || 0),
+          attendanceRateToday: Number(kpi.attendanceRateToday || 0),
+          overduePayments: Number(kpi.overduePayments || 0),
+          averageGrade: Number(kpi.averageGrade || 0),
         })
 
         if (isAdmin) {
@@ -76,6 +81,9 @@ export default function DashboardPage() {
     { label: 'Total Guru', value: stats.totalTeachers },
     { label: 'Total Kelas', value: stats.totalClasses },
     { label: 'Total Pembayaran', value: stats.totalPayments },
+    { label: 'Kehadiran Hari Ini', value: `${stats.attendanceRateToday}%` },
+    { label: 'Tunggakan Pembayaran', value: stats.overduePayments },
+    { label: 'Rata-rata Nilai', value: stats.averageGrade.toFixed(2) },
   ]
 
   return (

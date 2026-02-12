@@ -35,10 +35,11 @@
 - Added backup/restore scripts: `scripts/db-backup.ps1`, `scripts/db-restore.ps1`
 - Added centralized audit logging for create/update/delete requests + admin log API
 - Added admin Audit Log page on dashboard (`/dashboard/audit-logs`)
+- Added dashboard KPI API (`/api/dashboard/kpis`) + KPI cards on dashboard page
 
 ## Next Steps (Feature Options)
-1. Dashboard KPI ringkas (absensi hari ini, tunggakan pembayaran, nilai rata-rata)
-2. Notification center (pengingat pembayaran, absensi rendah, nilai kritis)
-3. Import history + retry failed rows untuk workflow CSV
-4. Testing expansion (unit/integration/e2e) + CI pipeline
-5. Deployment staging gratis (frontend+backend+db) untuk uji publik
+1. Notification center (pengingat pembayaran, absensi rendah, nilai kritis)
+2. Import history + retry failed rows untuk workflow CSV
+3. Testing expansion (unit/integration/e2e) + CI pipeline
+4. Deployment staging gratis (frontend+backend+db) untuk uji publik
+5. Scope KPI by school/class (agar multi-sekolah lebih akurat)
