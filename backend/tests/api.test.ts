@@ -1,4 +1,5 @@
 import request from "supertest";
+import bcrypt from "bcrypt";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { prismaMock } = vi.hoisted(() => ({
@@ -8,6 +9,9 @@ const { prismaMock } = vi.hoisted(() => ({
       findFirst: vi.fn(),
       create: vi.fn(),
       findUnique: vi.fn(),
+    },
+    student: {
+      findMany: vi.fn(),
     },
   },
 }));
@@ -58,5 +62,63 @@ describe("API baseline", () => {
   it("GET /api/notifications should require auth", async () => {
     const res = await request(app).get("/api/notifications");
     expect(res.status).toBe(401);
+  });
+
+  it("POST /api/auth/register should create user when payload is valid", async () => {
+    prismaMock.user.findFirst.mockResolvedValueOnce(null);
+    prismaMock.user.create.mockResolvedValueOnce({
+      id: 99,
+      username: "admin_ci",
+      email: "admin_ci@sios.local",
+      role: "ADMIN",
+    });
+
+    const res = await request(app).post("/api/auth/register").send({
+      username: "admin_ci",
+      email: "admin_ci@sios.local",
+      password: "Admin123!",
+      role: "ADMIN",
+    });
+
+    expect(res.status).toBe(201);
+    expect(res.body.id).toBe(99);
+    expect(res.body.username).toBe("admin_ci");
+    expect(res.body.role).toBe("ADMIN");
+  });
+
+  it("auth flow should allow login then access protected endpoint", async () => {
+    const hashed = await bcrypt.hash("Admin123!", 10);
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 101,
+      username: "admin_flow",
+      email: "admin_flow@sios.local",
+      role: "ADMIN",
+      password: hashed,
+    });
+
+    const loginRes = await request(app).post("/api/auth/login").send({
+      username: "admin_flow",
+      password: "Admin123!",
+    });
+
+    expect(loginRes.status).toBe(200);
+    expect(typeof loginRes.body.token).toBe("string");
+    expect(loginRes.body.token.length).toBeGreaterThan(10);
+
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 101,
+      username: "admin_flow",
+      email: "admin_flow@sios.local",
+      role: "ADMIN",
+      password: hashed,
+    });
+    prismaMock.student.findMany.mockResolvedValueOnce([]);
+
+    const protectedRes = await request(app)
+      .get("/api/students")
+      .set("Authorization", `Bearer ${loginRes.body.token}`);
+
+    expect(protectedRes.status).toBe(200);
+    expect(Array.isArray(protectedRes.body)).toBe(true);
   });
 });
