@@ -11,6 +11,7 @@ const routeRules: Array<{ pattern: RegExp; roles: User['role'][] }> = [
   { pattern: /^\/dashboard$/, roles: ['ADMIN', 'TEACHER', 'STUDENT', 'PARENT'] },
   { pattern: /^\/dashboard\/onboarding$/, roles: ['ADMIN'] },
   { pattern: /^\/dashboard\/audit-logs$/, roles: ['ADMIN'] },
+  { pattern: /^\/dashboard\/notifications$/, roles: ['ADMIN', 'TEACHER', 'STUDENT', 'PARENT'] },
   { pattern: /^\/dashboard\/students\/\d+\/detail$/, roles: ['ADMIN', 'TEACHER', 'STUDENT'] },
   { pattern: /^\/dashboard\/students\/new$/, roles: ['ADMIN'] },
   { pattern: /^\/dashboard\/students\/\d+$/, roles: ['ADMIN'] },
@@ -109,6 +110,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const menuItems = [
     { label: 'Dashboard', href: '/dashboard', icon: 'DB', roles: ['ADMIN', 'TEACHER', 'STUDENT', 'PARENT'] },
     { label: 'Onboarding', href: '/dashboard/onboarding', icon: 'ON', roles: ['ADMIN'] },
+    { label: 'Notifikasi', href: '/dashboard/notifications', icon: 'NT', roles: ['ADMIN', 'TEACHER', 'STUDENT', 'PARENT'] },
     { label: 'Audit Log', href: '/dashboard/audit-logs', icon: 'AL', roles: ['ADMIN'] },
     { label: 'Siswa', href: '/dashboard/students', icon: 'SW', roles: ['ADMIN', 'TEACHER'] },
     { label: 'Guru', href: '/dashboard/teachers', icon: 'GR', roles: ['ADMIN', 'TEACHER'] },

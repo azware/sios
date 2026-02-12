@@ -20,6 +20,14 @@ interface SetupState {
   needsOnboarding: boolean
 }
 
+interface NotificationItem {
+  id: string
+  title: string
+  message: string
+  severity: 'high' | 'medium'
+  link: string
+}
+
 export default function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats>({
     totalStudents: 0,
@@ -35,6 +43,7 @@ export default function DashboardPage() {
     needsOnboarding: false,
   })
   const [loading, setLoading] = useState(true)
+  const [notifications, setNotifications] = useState<NotificationItem[]>([])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,8 +51,10 @@ export default function DashboardPage() {
       const isAdmin = currentUser?.role === 'ADMIN'
 
       try {
-        const kpiRes = await apiClient.get('/dashboard/kpis')
+        const [kpiRes, notifRes] = await Promise.all([apiClient.get('/dashboard/kpis'), apiClient.get('/notifications')])
         const kpi = kpiRes.data || {}
+        const notifItems = Array.isArray(notifRes.data?.items) ? notifRes.data.items : []
+        setNotifications(notifItems.slice(0, 3))
 
         const classCount = Number(kpi.totalClasses || 0)
 
@@ -114,6 +125,27 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="card">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-gray-900">Notifikasi Prioritas</h2>
+            <Link href="/dashboard/notifications" className="text-sm text-blue-600 hover:text-blue-800">
+              Lihat Semua
+            </Link>
+          </div>
+          {notifications.length === 0 ? (
+            <p className="text-gray-700">Tidak ada notifikasi prioritas saat ini.</p>
+          ) : (
+            <ul className="space-y-3">
+              {notifications.map((item) => (
+                <li key={item.id} className="border rounded px-3 py-2">
+                  <p className="font-semibold text-gray-900">{item.title}</p>
+                  <p className="text-sm text-gray-700">{item.message}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
         <div className="card">
           <h2 className="text-xl font-bold text-gray-900 mb-4">Fitur Utama</h2>
           <ul className="space-y-3 text-gray-700">

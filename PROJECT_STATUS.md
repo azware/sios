@@ -36,10 +36,11 @@
 - Added centralized audit logging for create/update/delete requests + admin log API
 - Added admin Audit Log page on dashboard (`/dashboard/audit-logs`)
 - Added dashboard KPI API (`/api/dashboard/kpis`) + KPI cards on dashboard page
+- Added notification center API (`/api/notifications`) + dashboard notifications page (`/dashboard/notifications`)
 
 ## Next Steps (Feature Options)
-1. Notification center (pengingat pembayaran, absensi rendah, nilai kritis)
-2. Import history + retry failed rows untuk workflow CSV
-3. Testing expansion (unit/integration/e2e) + CI pipeline
-4. Deployment staging gratis (frontend+backend+db) untuk uji publik
-5. Scope KPI by school/class (agar multi-sekolah lebih akurat)
+1. Import history + retry failed rows untuk workflow CSV
+2. Testing expansion (unit/integration/e2e) + CI pipeline
+3. Deployment staging gratis (frontend+backend+db) untuk uji publik
+4. Scope KPI/notifications by school/class (agar multi-sekolah lebih akurat)
+5. Notification read-state + schedule digest harian/mingguan

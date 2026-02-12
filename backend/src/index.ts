@@ -14,6 +14,7 @@ import schoolsRouter from "./routes/schools";
 import usersRouter from "./routes/users";
 import auditLogsRouter from "./routes/audit-logs";
 import dashboardRouter from "./routes/dashboard";
+import notificationsRouter from "./routes/notifications";
 import { authenticate } from "./middleware/auth";
 import prisma from "./prisma";
 import { auditLogger } from "./middleware/audit";
@@ -38,6 +39,7 @@ app.use("/api/schools", authenticate, auditLogger, schoolsRouter);
 app.use("/api/users", authenticate, auditLogger, usersRouter);
 app.use("/api/audit-logs", authenticate, auditLogger, auditLogsRouter);
 app.use("/api/dashboard", authenticate, auditLogger, dashboardRouter);
+app.use("/api/notifications", authenticate, auditLogger, notificationsRouter);
 
 // Health check
 app.get("/api/health", (_, res) => res.json({ status: "ok" }));
