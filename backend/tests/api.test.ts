@@ -24,6 +24,12 @@ const { prismaMock } = vi.hoisted(() => ({
       update: vi.fn(),
       delete: vi.fn(),
     },
+    class: {
+      findMany: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+    },
     subject: {
       findMany: vi.fn(),
       create: vi.fn(),
@@ -618,6 +624,125 @@ describe("API baseline", () => {
     });
     prismaMock.teacher.delete.mockResolvedValueOnce({ id: 30 });
     const deleteRes = await request(app).delete("/api/teachers/30").set("Authorization", `Bearer ${adminToken}`);
+    expect(deleteRes.status).toBe(200);
+    expect(deleteRes.body.message).toContain("berhasil");
+  });
+
+  it("GET /api/classes should return 200 for teacher role", async () => {
+    const teacherToken = jwt.sign({ id: 990, role: "TEACHER" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 990,
+      username: "teacher_classes",
+      email: "teacher_classes@sios.local",
+      role: "TEACHER",
+      password: "hashed",
+    });
+    prismaMock.class.findMany.mockResolvedValueOnce([]);
+
+    const res = await request(app).get("/api/classes").set("Authorization", `Bearer ${teacherToken}`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  it("POST /api/classes should return 403 for teacher role", async () => {
+    const teacherToken = jwt.sign({ id: 991, role: "TEACHER" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 991,
+      username: "teacher_forbidden_class",
+      email: "teacher_forbidden_class@sios.local",
+      role: "TEACHER",
+      password: "hashed",
+    });
+
+    const res = await request(app).post("/api/classes").set("Authorization", `Bearer ${teacherToken}`).send({
+      name: "10A",
+      level: "10",
+      schoolId: 1,
+    });
+    expect(res.status).toBe(403);
+  });
+
+  it("POST /api/classes should return 409 for duplicate schoolId+name", async () => {
+    const adminToken = jwt.sign({ id: 992, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 992,
+      username: "admin_dup_class",
+      email: "admin_dup_class@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+
+    const duplicateError = new Prisma.PrismaClientKnownRequestError("Unique constraint failed", {
+      code: "P2002",
+      clientVersion: "5.0.0",
+      meta: { target: ["schoolId", "name"] },
+    });
+    prismaMock.class.create.mockRejectedValueOnce(duplicateError);
+
+    const res = await request(app).post("/api/classes").set("Authorization", `Bearer ${adminToken}`).send({
+      name: "10A",
+      level: "10",
+      schoolId: 1,
+    });
+
+    expect(res.status).toBe(409);
+    expect(res.body.error).toBe("Data sudah terdaftar");
+    expect(res.body.field).toBe("name");
+  });
+
+  it("classes CRUD should work for admin role", async () => {
+    const adminToken = jwt.sign({ id: 993, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
+
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 993,
+      username: "admin_class_crud",
+      email: "admin_class_crud@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+    prismaMock.class.create.mockResolvedValueOnce({
+      id: 40,
+      name: "11B",
+      level: "11",
+      schoolId: 1,
+    });
+    const createRes = await request(app).post("/api/classes").set("Authorization", `Bearer ${adminToken}`).send({
+      name: "11B",
+      level: "11",
+      schoolId: 1,
+    });
+    expect(createRes.status).toBe(201);
+    expect(createRes.body.id).toBe(40);
+
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 993,
+      username: "admin_class_crud",
+      email: "admin_class_crud@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+    prismaMock.class.update.mockResolvedValueOnce({
+      id: 40,
+      name: "11B Updated",
+      level: "11",
+      schoolId: 1,
+    });
+    const updateRes = await request(app).put("/api/classes/40").set("Authorization", `Bearer ${adminToken}`).send({
+      name: "11B Updated",
+      level: "11",
+    });
+    expect(updateRes.status).toBe(200);
+    expect(updateRes.body.name).toBe("11B Updated");
+
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 993,
+      username: "admin_class_crud",
+      email: "admin_class_crud@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+    prismaMock.class.delete.mockResolvedValueOnce({ id: 40 });
+    const deleteRes = await request(app).delete("/api/classes/40").set("Authorization", `Bearer ${adminToken}`);
     expect(deleteRes.status).toBe(200);
     expect(deleteRes.body.message).toContain("berhasil");
   });
