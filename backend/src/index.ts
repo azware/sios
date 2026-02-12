@@ -13,6 +13,7 @@ import paymentsRouter from "./routes/payments";
 import schoolsRouter from "./routes/schools";
 import usersRouter from "./routes/users";
 import { authenticate } from "./middleware/auth";
+import prisma from "./prisma";
 
 const app = express();
 app.use(cors());
@@ -35,6 +36,14 @@ app.use("/api/users", authenticate, usersRouter);
 
 // Health check
 app.get("/api/health", (_, res) => res.json({ status: "ok" }));
+app.get("/api/health/ready", async (_, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    return res.json({ status: "ready", db: "up" });
+  } catch {
+    return res.status(503).json({ status: "not_ready", db: "down" });
+  }
+});
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Backend listening on ${PORT}`));

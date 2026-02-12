@@ -99,6 +99,18 @@ Backend: http://localhost:4000/api
 powershell -ExecutionPolicy Bypass -File backend\test-comprehensive.ps1
 ```
 
+## Operational Readiness
+- Liveness endpoint: `GET /api/health`
+- Readiness endpoint (with DB check): `GET /api/health/ready`
+- Backup database (PostgreSQL in Docker):
+```bash
+powershell -ExecutionPolicy Bypass -File scripts\db-backup.ps1
+```
+- Restore database dari file dump:
+```bash
+powershell -ExecutionPolicy Bypass -File scripts\db-restore.ps1 -DumpFile .\backups\schooldb_YYYYMMDD_HHMMSS.sql
+```
+
 ## CSV Import Notes
 - Setiap modul punya tombol `Template CSV` di halaman list untuk unduh format siap pakai.
 - Aktifkan `Dry Run` sebelum import untuk validasi CSV tanpa menyimpan data.
@@ -115,5 +127,5 @@ powershell -ExecutionPolicy Bypass -File backend\test-comprehensive.ps1
 
 ## Project Status
 **Current Phase**: Full Stack Ready (Backend + Frontend)
-**Current Version**: 0.2.0
-**Last Updated**: February 10, 2026
+**Current Version**: 0.3.0
+**Last Updated**: February 12, 2026

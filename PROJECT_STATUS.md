@@ -10,6 +10,7 @@
 - CRUD modules: Students, Teachers, Classes, Subjects, Schools, Attendance, Grades, Payments
 - Admin-only endpoints: `/api/schools`, `/api/users?role=...`
 - Unique conflict handling (409 + field)
+- Health endpoints: `/api/health` (liveness), `/api/health/ready` (DB readiness)
 
 ## Frontend Summary
 - Next.js 14 + Tailwind
@@ -29,8 +30,12 @@
 - Added auto-redirect for admin to onboarding when setup awal belum lengkap
 - Added CSV export/import on Subjects, Students, Teachers, and Classes pages
 - Added CSV import hardening: template download, dry-run validation, and error report export
+- Added DB readiness health check endpoint (`/api/health/ready`)
+- Added backup/restore scripts: `scripts/db-backup.ps1`, `scripts/db-restore.ps1`
 
-## Next Steps
-1. CSV export/import
-2. Advanced reports and analytics
-3. Testing expansion (unit/integration)
+## Next Steps (Feature Options)
+1. Audit log aktivitas admin/user (siapa mengubah apa)
+2. Dashboard KPI ringkas (absensi hari ini, tunggakan pembayaran, nilai rata-rata)
+3. Notification center (pengingat pembayaran, absensi rendah, nilai kritis)
+4. Import history + retry failed rows untuk workflow CSV
+5. Testing expansion (unit/integration/e2e) + CI pipeline
