@@ -14,6 +14,10 @@ const { prismaMock } = vi.hoisted(() => ({
     },
     student: {
       findMany: vi.fn(),
+      create: vi.fn(),
+    },
+    teacher: {
+      create: vi.fn(),
     },
     subject: {
       create: vi.fn(),
@@ -69,6 +73,20 @@ describe("API baseline", () => {
 
   it("GET /api/notifications should require auth", async () => {
     const res = await request(app).get("/api/notifications");
+    expect(res.status).toBe(401);
+  });
+
+  it("GET /api/students should return 401 for malformed token", async () => {
+    const res = await request(app).get("/api/students").set("Authorization", "Bearer invalid.token.value");
+    expect(res.status).toBe(401);
+  });
+
+  it("GET /api/students should return 401 for expired token", async () => {
+    const expiredToken = jwt.sign(
+      { id: 999, role: "ADMIN", exp: Math.floor(Date.now() / 1000) - 60 },
+      process.env.JWT_SECRET || "secret"
+    );
+    const res = await request(app).get("/api/students").set("Authorization", `Bearer ${expiredToken}`);
     expect(res.status).toBe(401);
   });
 
@@ -237,5 +255,67 @@ describe("API baseline", () => {
     expect(res.status).toBe(409);
     expect(res.body.error).toBe("Data sudah terdaftar");
     expect(res.body.field).toBe("code");
+  });
+
+  it("POST /api/students should return 409 for duplicate nis", async () => {
+    const adminToken = jwt.sign({ id: 701, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 701,
+      username: "admin_dup_student",
+      email: "admin_dup_student@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+
+    const duplicateError = new Prisma.PrismaClientKnownRequestError("Unique constraint failed", {
+      code: "P2002",
+      clientVersion: "5.0.0",
+      meta: { target: ["nis"] },
+    });
+    prismaMock.student.create.mockRejectedValueOnce(duplicateError);
+
+    const res = await request(app).post("/api/students").set("Authorization", `Bearer ${adminToken}`).send({
+      nis: "NIS001",
+      nisn: "NISN001",
+      name: "Siswa Uji",
+      email: "siswa_uji@sios.local",
+      classId: 1,
+      schoolId: 1,
+      userId: 10,
+    });
+
+    expect(res.status).toBe(409);
+    expect(res.body.error).toBe("Data sudah terdaftar");
+    expect(res.body.field).toBe("nis");
+  });
+
+  it("POST /api/teachers should return 409 for duplicate nip", async () => {
+    const adminToken = jwt.sign({ id: 801, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 801,
+      username: "admin_dup_teacher",
+      email: "admin_dup_teacher@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+
+    const duplicateError = new Prisma.PrismaClientKnownRequestError("Unique constraint failed", {
+      code: "P2002",
+      clientVersion: "5.0.0",
+      meta: { target: ["nip"] },
+    });
+    prismaMock.teacher.create.mockRejectedValueOnce(duplicateError);
+
+    const res = await request(app).post("/api/teachers").set("Authorization", `Bearer ${adminToken}`).send({
+      nip: "NIP001",
+      name: "Guru Uji",
+      email: "guru_uji@sios.local",
+      schoolId: 1,
+      userId: 11,
+    });
+
+    expect(res.status).toBe(409);
+    expect(res.body.error).toBe("Data sudah terdaftar");
+    expect(res.body.field).toBe("nip");
   });
 });
