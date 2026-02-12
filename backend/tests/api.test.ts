@@ -1,6 +1,7 @@
 import request from "supertest";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { Prisma } from "@prisma/client";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const { prismaMock } = vi.hoisted(() => ({
@@ -13,6 +14,12 @@ const { prismaMock } = vi.hoisted(() => ({
     },
     student: {
       findMany: vi.fn(),
+    },
+    subject: {
+      create: vi.fn(),
+    },
+    auditLog: {
+      create: vi.fn().mockResolvedValue({ id: 1 }),
     },
   },
 }));
@@ -85,6 +92,26 @@ describe("API baseline", () => {
     expect(res.body.id).toBe(99);
     expect(res.body.username).toBe("admin_ci");
     expect(res.body.role).toBe("ADMIN");
+  });
+
+  it("POST /api/auth/register should reject duplicate username/email", async () => {
+    prismaMock.user.findFirst.mockResolvedValueOnce({
+      id: 77,
+      username: "dup_user",
+      email: "dup@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+
+    const res = await request(app).post("/api/auth/register").send({
+      username: "dup_user",
+      email: "dup@sios.local",
+      password: "Admin123!",
+      role: "ADMIN",
+    });
+
+    expect(res.status).toBe(400);
+    expect(res.body.error).toContain("sudah terdaftar");
   });
 
   it("auth flow should allow login then access protected endpoint", async () => {
@@ -165,5 +192,50 @@ describe("API baseline", () => {
     const res = await request(app).get("/api/users").set("Authorization", `Bearer ${adminToken}`);
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  it("POST /api/subjects should validate required fields", async () => {
+    const adminToken = jwt.sign({ id: 501, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 501,
+      username: "admin_subject",
+      email: "admin_subject@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+
+    const res = await request(app).post("/api/subjects").set("Authorization", `Bearer ${adminToken}`).send({});
+    expect(res.status).toBe(400);
+    expect(res.body.error).toContain("Kode dan nama");
+  });
+
+  it("POST /api/subjects should return 409 for duplicate subject code", async () => {
+    const adminToken = jwt.sign({ id: 601, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 601,
+      username: "admin_dup_subject",
+      email: "admin_dup_subject@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+
+    const duplicateError = new Prisma.PrismaClientKnownRequestError(
+      "Unique constraint failed",
+      {
+        code: "P2002",
+        clientVersion: "5.0.0",
+        meta: { target: ["code"] },
+      }
+    );
+    prismaMock.subject.create.mockRejectedValueOnce(duplicateError);
+
+    const res = await request(app).post("/api/subjects").set("Authorization", `Bearer ${adminToken}`).send({
+      code: "MAT101",
+      name: "Matematika",
+    });
+
+    expect(res.status).toBe(409);
+    expect(res.body.error).toBe("Data sudah terdaftar");
+    expect(res.body.field).toBe("code");
   });
 });
