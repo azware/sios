@@ -15,6 +15,8 @@ const { prismaMock } = vi.hoisted(() => ({
     student: {
       findMany: vi.fn(),
       create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
     },
     teacher: {
       create: vi.fn(),
@@ -412,6 +414,110 @@ describe("API baseline", () => {
     });
     prismaMock.subject.delete.mockResolvedValueOnce({ id: 10 });
     const deleteRes = await request(app).delete("/api/subjects/10").set("Authorization", `Bearer ${adminToken}`);
+    expect(deleteRes.status).toBe(200);
+    expect(deleteRes.body.message).toContain("berhasil");
+  });
+
+  it("GET /api/students should return 200 for teacher role", async () => {
+    const teacherToken = jwt.sign({ id: 950, role: "TEACHER" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 950,
+      username: "teacher_students",
+      email: "teacher_students@sios.local",
+      role: "TEACHER",
+      password: "hashed",
+    });
+    prismaMock.student.findMany.mockResolvedValueOnce([]);
+
+    const res = await request(app).get("/api/students").set("Authorization", `Bearer ${teacherToken}`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  it("POST /api/students should return 403 for student role", async () => {
+    const studentToken = jwt.sign({ id: 951, role: "STUDENT" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 951,
+      username: "student_forbidden",
+      email: "student_forbidden@sios.local",
+      role: "STUDENT",
+      password: "hashed",
+    });
+
+    const res = await request(app).post("/api/students").set("Authorization", `Bearer ${studentToken}`).send({
+      nis: "NISX01",
+      nisn: "NISNX01",
+      name: "Siswa X",
+      email: "sx@sios.local",
+      classId: 1,
+      schoolId: 1,
+      userId: 50,
+    });
+    expect(res.status).toBe(403);
+  });
+
+  it("students CRUD should work for admin role", async () => {
+    const adminToken = jwt.sign({ id: 952, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
+
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 952,
+      username: "admin_student_crud",
+      email: "admin_student_crud@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+    prismaMock.student.create.mockResolvedValueOnce({
+      id: 20,
+      nis: "NISA01",
+      nisn: "NISNA01",
+      name: "Siswa A",
+      email: "siswaa@sios.local",
+    });
+    const createRes = await request(app).post("/api/students").set("Authorization", `Bearer ${adminToken}`).send({
+      nis: "NISA01",
+      nisn: "NISNA01",
+      name: "Siswa A",
+      email: "siswaa@sios.local",
+      classId: 1,
+      schoolId: 1,
+      userId: 100,
+    });
+    expect(createRes.status).toBe(201);
+    expect(createRes.body.id).toBe(20);
+
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 952,
+      username: "admin_student_crud",
+      email: "admin_student_crud@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+    prismaMock.student.update.mockResolvedValueOnce({
+      id: 20,
+      nis: "NISA01",
+      nisn: "NISNA01",
+      name: "Siswa A Updated",
+      email: "siswaa@sios.local",
+    });
+    const updateRes = await request(app).put("/api/students/20").set("Authorization", `Bearer ${adminToken}`).send({
+      nis: "NISA01",
+      nisn: "NISNA01",
+      name: "Siswa A Updated",
+      email: "siswaa@sios.local",
+      classId: 1,
+    });
+    expect(updateRes.status).toBe(200);
+    expect(updateRes.body.name).toBe("Siswa A Updated");
+
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 952,
+      username: "admin_student_crud",
+      email: "admin_student_crud@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+    prismaMock.student.delete.mockResolvedValueOnce({ id: 20 });
+    const deleteRes = await request(app).delete("/api/students/20").set("Authorization", `Bearer ${adminToken}`);
     expect(deleteRes.status).toBe(200);
     expect(deleteRes.body.message).toContain("berhasil");
   });
