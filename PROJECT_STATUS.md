@@ -39,6 +39,7 @@
 - Added notification center API (`/api/notifications`) + dashboard notifications page (`/dashboard/notifications`)
 - Added CSV import history + retry failed rows on Subjects, Classes, Teachers, and Students pages
 - Added GitHub Actions CI pipeline (`.github/workflows/ci.yml`) for backend build and frontend lint/build
+- Added backend baseline API tests (Vitest + Supertest) and integrated test run in CI
 
 ## Next Steps (Feature Options)
 1. Testing expansion (unit/integration/e2e)

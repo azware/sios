@@ -104,9 +104,13 @@ Backend: http://localhost:4000/api
 ```bash
 powershell -ExecutionPolicy Bypass -File backend\test-comprehensive.ps1
 ```
+```bash
+cd backend
+npm test
+```
 - CI otomatis di GitHub Actions:
   - Workflow: `.github/workflows/ci.yml`
-  - Job backend: `npm ci`, `npm run prisma:generate`, `npm run build`
+  - Job backend: `npm ci`, `npm run prisma:generate`, `npm test`, `npm run build`
   - Job frontend: `npm ci`, `npm run lint`, `npm run build`
 
 ## Operational Readiness
