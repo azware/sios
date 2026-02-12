@@ -104,6 +104,10 @@ Backend: http://localhost:4000/api
 ```bash
 powershell -ExecutionPolicy Bypass -File backend\test-comprehensive.ps1
 ```
+- CI otomatis di GitHub Actions:
+  - Workflow: `.github/workflows/ci.yml`
+  - Job backend: `npm ci`, `npm run prisma:generate`, `npm run build`
+  - Job frontend: `npm ci`, `npm run lint`, `npm run build`
 
 ## Operational Readiness
 - Liveness endpoint: `GET /api/health`
@@ -135,5 +139,5 @@ powershell -ExecutionPolicy Bypass -File scripts\db-restore.ps1 -DumpFile .\back
 
 ## Project Status
 **Current Phase**: Full Stack Ready (Backend + Frontend)
-**Current Version**: 0.3.0
+**Current Version**: 0.4.0
 **Last Updated**: February 12, 2026
