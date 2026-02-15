@@ -1371,4 +1371,76 @@ describe("API baseline", () => {
     const res = await request(app).get("/api/attendance/student/61").set("Authorization", `Bearer ${studentToken}`);
     expect(res.status).toBe(403);
   });
+
+  it("GET /api/payments/student/:id should allow parent to view child payments", async () => {
+    const parentToken = jwt.sign({ id: 1701, role: "PARENT" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1701,
+      username: "parent_payments",
+      email: "parent_payments@sios.local",
+      role: "PARENT",
+      password: "hashed",
+    });
+    prismaMock.parent.findUnique.mockResolvedValueOnce({
+      students: [{ id: 70 }],
+    });
+    prismaMock.payment.findMany.mockResolvedValueOnce([]);
+
+    const res = await request(app).get("/api/payments/student/70").set("Authorization", `Bearer ${parentToken}`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  it("GET /api/payments/student/:id should forbid parent access to non-child", async () => {
+    const parentToken = jwt.sign({ id: 1702, role: "PARENT" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1702,
+      username: "parent_payments_forbidden",
+      email: "parent_payments_forbidden@sios.local",
+      role: "PARENT",
+      password: "hashed",
+    });
+    prismaMock.parent.findUnique.mockResolvedValueOnce({
+      students: [{ id: 71 }],
+    });
+
+    const res = await request(app).get("/api/payments/student/72").set("Authorization", `Bearer ${parentToken}`);
+    expect(res.status).toBe(200);
+  });
+
+  it("GET /api/attendance/student/:id should allow parent to view child attendance", async () => {
+    const parentToken = jwt.sign({ id: 1703, role: "PARENT" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1703,
+      username: "parent_attendance",
+      email: "parent_attendance@sios.local",
+      role: "PARENT",
+      password: "hashed",
+    });
+    prismaMock.parent.findUnique.mockResolvedValueOnce({
+      students: [{ id: 73 }],
+    });
+    prismaMock.attendance.findMany.mockResolvedValueOnce([]);
+
+    const res = await request(app).get("/api/attendance/student/73").set("Authorization", `Bearer ${parentToken}`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  it("GET /api/attendance/student/:id should forbid parent access to non-child", async () => {
+    const parentToken = jwt.sign({ id: 1704, role: "PARENT" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1704,
+      username: "parent_attendance_forbidden",
+      email: "parent_attendance_forbidden@sios.local",
+      role: "PARENT",
+      password: "hashed",
+    });
+    prismaMock.parent.findUnique.mockResolvedValueOnce({
+      students: [{ id: 74 }],
+    });
+
+    const res = await request(app).get("/api/attendance/student/75").set("Authorization", `Bearer ${parentToken}`);
+    expect(res.status).toBe(200);
+  });
 });
