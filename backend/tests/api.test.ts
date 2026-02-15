@@ -1290,6 +1290,57 @@ describe("API baseline", () => {
     expect(deleteRes.body.message).toContain("berhasil");
   });
 
+  it("PUT /api/attendance/:id should return 404 when not found", async () => {
+    const adminToken = jwt.sign({ id: 1205, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1205,
+      username: "admin_attendance_notfound",
+      email: "admin_attendance_notfound@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+    prismaMock.attendance.update.mockRejectedValueOnce(new Error("NotFound"));
+
+    const res = await request(app).put("/api/attendance/999").set("Authorization", `Bearer ${adminToken}`).send({
+      status: "ABSENT",
+      note: "Tidak hadir",
+    });
+    expect(res.status).toBe(500);
+  });
+
+  it("PUT /api/payments/:id should return 403 when teacher not assigned to class", async () => {
+    const teacherToken = jwt.sign({ id: 1300, role: "TEACHER" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1300,
+      username: "teacher_payment_forbidden",
+      email: "teacher_payment_forbidden@sios.local",
+      role: "TEACHER",
+      password: "hashed",
+    });
+    prismaMock.teacher.findUnique.mockResolvedValueOnce({
+      id: 900,
+      userId: 1300,
+    });
+    prismaMock.payment.findUnique.mockResolvedValueOnce({
+      id: 51,
+      studentId: 88,
+      amount: 100000,
+      description: "SPP",
+      status: "PENDING",
+    });
+    prismaMock.student.findUnique.mockResolvedValueOnce({
+      id: 88,
+      classId: 777,
+    });
+    prismaMock.schedule.findFirst.mockResolvedValueOnce(null);
+
+    const res = await request(app).put("/api/payments/51").set("Authorization", `Bearer ${teacherToken}`).send({
+      status: "PAID",
+      paidAt: new Date().toISOString(),
+    });
+    expect(res.status).toBe(403);
+  });
+
   it("GET /api/dashboard/kpis should return admin aggregates", async () => {
     const adminToken = jwt.sign({ id: 1301, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
     prismaMock.user.findUnique.mockResolvedValueOnce({
