@@ -1554,6 +1554,46 @@ describe("API baseline", () => {
     expect(res.status).toBe(403);
   });
 
+  it("GET /api/teachers/:id should return 200 for teacher role", async () => {
+    const teacherToken = jwt.sign({ id: 1951, role: "TEACHER" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1951,
+      username: "teacher_profile",
+      email: "teacher_profile@sios.local",
+      role: "TEACHER",
+      password: "hashed",
+    });
+    prismaMock.teacher.findUnique.mockResolvedValueOnce({
+      id: 610,
+      name: "Guru Profile",
+      school: { id: 1, name: "Sekolah A" },
+      user: { email: "teacher_profile@sios.local", role: "TEACHER" },
+      subjects: [],
+      schedules: [],
+      grades: [],
+    });
+
+    const res = await request(app).get("/api/teachers/610").set("Authorization", `Bearer ${teacherToken}`);
+    expect(res.status).toBe(200);
+    expect(res.body.id).toBe(610);
+    expect(res.body.name).toBe("Guru Profile");
+  });
+
+  it("GET /api/teachers/:id should return 404 when not found", async () => {
+    const adminToken = jwt.sign({ id: 1952, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1952,
+      username: "admin_teacher_detail",
+      email: "admin_teacher_detail@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+    prismaMock.teacher.findUnique.mockResolvedValueOnce(null);
+
+    const res = await request(app).get("/api/teachers/999").set("Authorization", `Bearer ${adminToken}`);
+    expect(res.status).toBe(404);
+  });
+
   it("POST /api/schools should validate required fields", async () => {
     const adminToken = jwt.sign({ id: 1802, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
     prismaMock.user.findUnique.mockResolvedValueOnce({
