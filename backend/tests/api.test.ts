@@ -1212,4 +1212,80 @@ describe("API baseline", () => {
     expect(res.body.overduePayments).toBe(1);
     expect(res.body.averageGrade).toBe(90);
   });
+
+  it("GET /api/payments/student/:id should allow student to view own payments", async () => {
+    const studentToken = jwt.sign({ id: 1401, role: "STUDENT" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1401,
+      username: "student_payments",
+      email: "student_payments@sios.local",
+      role: "STUDENT",
+      password: "hashed",
+    });
+    prismaMock.student.findUnique.mockResolvedValueOnce({
+      id: 55,
+      userId: 1401,
+    });
+    prismaMock.payment.findMany.mockResolvedValueOnce([]);
+
+    const res = await request(app).get("/api/payments/student/55").set("Authorization", `Bearer ${studentToken}`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  it("GET /api/payments/student/:id should forbid student access to other student", async () => {
+    const studentToken = jwt.sign({ id: 1402, role: "STUDENT" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1402,
+      username: "student_payments_forbidden",
+      email: "student_payments_forbidden@sios.local",
+      role: "STUDENT",
+      password: "hashed",
+    });
+    prismaMock.student.findUnique.mockResolvedValueOnce({
+      id: 56,
+      userId: 9999,
+    });
+
+    const res = await request(app).get("/api/payments/student/56").set("Authorization", `Bearer ${studentToken}`);
+    expect(res.status).toBe(403);
+  });
+
+  it("GET /api/attendance/student/:id should allow student to view own attendance", async () => {
+    const studentToken = jwt.sign({ id: 1403, role: "STUDENT" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1403,
+      username: "student_attendance",
+      email: "student_attendance@sios.local",
+      role: "STUDENT",
+      password: "hashed",
+    });
+    prismaMock.student.findUnique.mockResolvedValueOnce({
+      id: 60,
+      userId: 1403,
+    });
+    prismaMock.attendance.findMany.mockResolvedValueOnce([]);
+
+    const res = await request(app).get("/api/attendance/student/60").set("Authorization", `Bearer ${studentToken}`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  it("GET /api/attendance/student/:id should forbid student access to other student", async () => {
+    const studentToken = jwt.sign({ id: 1404, role: "STUDENT" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1404,
+      username: "student_attendance_forbidden",
+      email: "student_attendance_forbidden@sios.local",
+      role: "STUDENT",
+      password: "hashed",
+    });
+    prismaMock.student.findUnique.mockResolvedValueOnce({
+      id: 61,
+      userId: 9999,
+    });
+
+    const res = await request(app).get("/api/attendance/student/61").set("Authorization", `Bearer ${studentToken}`);
+    expect(res.status).toBe(403);
+  });
 });
