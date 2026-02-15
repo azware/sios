@@ -74,6 +74,8 @@ const { prismaMock } = vi.hoisted(() => ({
     },
     auditLog: {
       create: vi.fn().mockResolvedValue({ id: 1 }),
+      findMany: vi.fn(),
+      count: vi.fn(),
     },
   },
 }));
@@ -260,6 +262,38 @@ describe("API baseline", () => {
     const res = await request(app).get("/api/users").set("Authorization", `Bearer ${adminToken}`);
     expect(res.status).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  it("GET /api/audit-logs should return pagination for admin role", async () => {
+    const adminToken = jwt.sign({ id: 1601, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1601,
+      username: "admin_audit",
+      email: "admin_audit@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+    prismaMock.auditLog.findMany.mockResolvedValueOnce([
+      {
+        id: 1,
+        method: "POST",
+        path: "/api/subjects",
+        statusCode: 201,
+        createdAt: new Date(),
+        user: { id: 1601, username: "admin_audit", role: "ADMIN" },
+      },
+    ]);
+    prismaMock.auditLog.count.mockResolvedValueOnce(1);
+
+    const res = await request(app)
+      .get("/api/audit-logs?page=1&pageSize=20&method=POST&path=subjects")
+      .set("Authorization", `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body.data)).toBe(true);
+    expect(res.body.data.length).toBe(1);
+    expect(res.body.pagination.total).toBe(1);
+    expect(res.body.pagination.page).toBe(1);
   });
 
   it("POST /api/subjects should validate required fields", async () => {
