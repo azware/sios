@@ -1502,6 +1502,58 @@ describe("API baseline", () => {
     expect(res.body[0].name).toBe("Sekolah A");
   });
 
+  it("GET /api/students/:id should allow student to view own profile", async () => {
+    const studentToken = jwt.sign({ id: 1901, role: "STUDENT" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1901,
+      username: "student_profile",
+      email: "student_profile@sios.local",
+      role: "STUDENT",
+      password: "hashed",
+    });
+    prismaMock.student.findUnique.mockResolvedValueOnce({
+      id: 501,
+      userId: 1901,
+      name: "Siswa Profile",
+      class: { id: 1, name: "10A" },
+      user: { email: "student_profile@sios.local", role: "STUDENT" },
+      attendances: [],
+      grades: [],
+      payments: [],
+      parents: [],
+    });
+
+    const res = await request(app).get("/api/students/501").set("Authorization", `Bearer ${studentToken}`);
+    expect(res.status).toBe(200);
+    expect(res.body.id).toBe(501);
+    expect(res.body.name).toBe("Siswa Profile");
+  });
+
+  it("GET /api/students/:id should forbid student access to other profile", async () => {
+    const studentToken = jwt.sign({ id: 1902, role: "STUDENT" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1902,
+      username: "student_forbidden_profile",
+      email: "student_forbidden_profile@sios.local",
+      role: "STUDENT",
+      password: "hashed",
+    });
+    prismaMock.student.findUnique.mockResolvedValueOnce({
+      id: 502,
+      userId: 9999,
+      name: "Other Student",
+      class: { id: 1, name: "10A" },
+      user: { email: "other@sios.local", role: "STUDENT" },
+      attendances: [],
+      grades: [],
+      payments: [],
+      parents: [],
+    });
+
+    const res = await request(app).get("/api/students/502").set("Authorization", `Bearer ${studentToken}`);
+    expect(res.status).toBe(403);
+  });
+
   it("POST /api/schools should validate required fields", async () => {
     const adminToken = jwt.sign({ id: 1802, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
     prismaMock.user.findUnique.mockResolvedValueOnce({
