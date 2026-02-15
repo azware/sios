@@ -34,6 +34,14 @@ router.get("/student/:studentId", async (req, res) => {
     if (user.role === "STUDENT" && user.id !== (await prisma.student.findUnique({ where: { id: studentId } }))?.userId) {
       return res.status(403).json({ error: "Forbidden" });
     }
+    if (user.role === "PARENT") {
+      const parent = await prisma.parent.findUnique({
+        where: { userId: user.id },
+        select: { students: { select: { id: true } } },
+      });
+      const allowedIds = parent?.students.map((item) => item.id) ?? [];
+      if (!allowedIds.includes(studentId)) return res.status(403).json({ error: "Forbidden" });
+    }
     const attendances = await prisma.attendance.findMany({
       where: { studentId },
       include: { student: true },

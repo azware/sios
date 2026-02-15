@@ -1405,7 +1405,7 @@ describe("API baseline", () => {
     });
 
     const res = await request(app).get("/api/payments/student/72").set("Authorization", `Bearer ${parentToken}`);
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(403);
   });
 
   it("GET /api/attendance/student/:id should allow parent to view child attendance", async () => {
@@ -1441,6 +1441,6 @@ describe("API baseline", () => {
     });
 
     const res = await request(app).get("/api/attendance/student/75").set("Authorization", `Bearer ${parentToken}`);
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(403);
   });
 });
