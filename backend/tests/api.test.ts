@@ -1570,4 +1570,30 @@ describe("API baseline", () => {
     expect(deleteRes.status).toBe(200);
     expect(deleteRes.body.message).toContain("berhasil");
   });
+
+  it("POST /api/schools should return 409 for duplicate school name", async () => {
+    const adminToken = jwt.sign({ id: 1804, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1804,
+      username: "admin_dup_school",
+      email: "admin_dup_school@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+
+    const duplicateError = new Prisma.PrismaClientKnownRequestError("Unique constraint failed", {
+      code: "P2002",
+      clientVersion: "5.0.0",
+      meta: { target: ["name"] },
+    });
+    prismaMock.school.create.mockRejectedValueOnce(duplicateError);
+
+    const res = await request(app).post("/api/schools").set("Authorization", `Bearer ${adminToken}`).send({
+      name: "Sekolah A",
+    });
+
+    expect(res.status).toBe(409);
+    expect(res.body.error).toBe("Data sudah terdaftar");
+    expect(res.body.field).toBe("name");
+  });
 });
