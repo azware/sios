@@ -31,6 +31,7 @@ const { prismaMock } = vi.hoisted(() => ({
     },
     class: {
       findMany: vi.fn(),
+      findUnique: vi.fn(),
       create: vi.fn(),
       update: vi.fn(),
       delete: vi.fn(),
@@ -53,6 +54,7 @@ const { prismaMock } = vi.hoisted(() => ({
     },
     attendance: {
       findMany: vi.fn(),
+      findUnique: vi.fn(),
       create: vi.fn(),
       update: vi.fn(),
       delete: vi.fn(),
@@ -75,6 +77,7 @@ const { prismaMock } = vi.hoisted(() => ({
     },
     subject: {
       findMany: vi.fn(),
+      findUnique: vi.fn(),
       create: vi.fn(),
       update: vi.fn(),
       delete: vi.fn(),
@@ -1264,6 +1267,12 @@ describe("API baseline", () => {
       role: "ADMIN",
       password: "hashed",
     });
+    prismaMock.attendance.findUnique.mockResolvedValueOnce({
+      id: 70,
+      studentId: 10,
+      date: new Date(),
+      status: "PRESENT",
+    });
     prismaMock.attendance.update.mockResolvedValueOnce({
       id: 70,
       studentId: 10,
@@ -1299,13 +1308,13 @@ describe("API baseline", () => {
       role: "ADMIN",
       password: "hashed",
     });
-    prismaMock.attendance.update.mockRejectedValueOnce(new Error("NotFound"));
+    prismaMock.attendance.findUnique.mockResolvedValueOnce(null);
 
     const res = await request(app).put("/api/attendance/999").set("Authorization", `Bearer ${adminToken}`).send({
       status: "ABSENT",
       note: "Tidak hadir",
     });
-    expect(res.status).toBe(500);
+    expect(res.status).toBe(404);
   });
 
   it("PUT /api/payments/:id should return 403 when teacher not assigned to class", async () => {
@@ -1729,7 +1738,7 @@ describe("API baseline", () => {
       role: "ADMIN",
       password: "hashed",
     });
-    prismaMock.class.findUnique = vi.fn().mockResolvedValueOnce({
+    prismaMock.class.findUnique.mockResolvedValueOnce({
       id: 501,
       name: "10A",
       level: "10",
@@ -1752,7 +1761,7 @@ describe("API baseline", () => {
       role: "ADMIN",
       password: "hashed",
     });
-    prismaMock.class.findUnique = vi.fn().mockResolvedValueOnce(null);
+    prismaMock.class.findUnique.mockResolvedValueOnce(null);
 
     const res = await request(app).get("/api/classes/999").set("Authorization", `Bearer ${adminToken}`);
     expect(res.status).toBe(404);
@@ -1804,7 +1813,7 @@ describe("API baseline", () => {
       role: "ADMIN",
       password: "hashed",
     });
-    prismaMock.subject.findUnique = vi.fn().mockResolvedValueOnce({
+    prismaMock.subject.findUnique.mockResolvedValueOnce({
       id: 801,
       code: "MAT101",
       name: "Matematika",
@@ -1828,7 +1837,7 @@ describe("API baseline", () => {
       role: "ADMIN",
       password: "hashed",
     });
-    prismaMock.subject.findUnique = vi.fn().mockResolvedValueOnce(null);
+    prismaMock.subject.findUnique.mockResolvedValueOnce(null);
 
     const res = await request(app).get("/api/subjects/999").set("Authorization", `Bearer ${adminToken}`);
     expect(res.status).toBe(404);

@@ -95,6 +95,11 @@ router.put("/:id", authorize(["ADMIN", "TEACHER"]), async (req, res) => {
     const id = Number(req.params.id);
     const { status, note } = req.body;
 
+    const existing = await prisma.attendance.findUnique({ where: { id } });
+    if (!existing) {
+      return res.status(404).json({ error: "Attendance not found" });
+    }
+
     const attendance = await prisma.attendance.update({
       where: { id },
       data: { status: status as AttendanceStatus, note },
