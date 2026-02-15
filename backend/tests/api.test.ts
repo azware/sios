@@ -271,6 +271,40 @@ describe("API baseline", () => {
     expect(Array.isArray(res.body)).toBe(true);
   });
 
+  it("GET /api/users should return 400 for invalid role filter", async () => {
+    const adminToken = jwt.sign({ id: 401, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 401,
+      username: "admin_list",
+      email: "admin_list@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+
+    const res = await request(app).get("/api/users?role=INVALID").set("Authorization", `Bearer ${adminToken}`);
+    expect(res.status).toBe(400);
+    expect(res.body.error).toContain("Role");
+  });
+
+  it("GET /api/users should allow role filter for admin", async () => {
+    const adminToken = jwt.sign({ id: 401, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 401,
+      username: "admin_list",
+      email: "admin_list@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+    prismaMock.user.findMany = vi.fn().mockResolvedValueOnce([
+      { id: 1, username: "teacher1", email: "teacher1@sios.local", role: "TEACHER" },
+    ]);
+
+    const res = await request(app).get("/api/users?role=TEACHER").set("Authorization", `Bearer ${adminToken}`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body[0].role).toBe("TEACHER");
+  });
+
   it("GET /api/audit-logs should return pagination for admin role", async () => {
     const adminToken = jwt.sign({ id: 1601, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
     prismaMock.user.findUnique.mockResolvedValueOnce({
