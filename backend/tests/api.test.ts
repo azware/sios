@@ -30,6 +30,13 @@ const { prismaMock } = vi.hoisted(() => ({
       update: vi.fn(),
       delete: vi.fn(),
     },
+    payment: {
+      findMany: vi.fn(),
+      findUnique: vi.fn(),
+      create: vi.fn(),
+      update: vi.fn(),
+      delete: vi.fn(),
+    },
     subject: {
       findMany: vi.fn(),
       create: vi.fn(),
@@ -743,6 +750,106 @@ describe("API baseline", () => {
     });
     prismaMock.class.delete.mockResolvedValueOnce({ id: 40 });
     const deleteRes = await request(app).delete("/api/classes/40").set("Authorization", `Bearer ${adminToken}`);
+    expect(deleteRes.status).toBe(200);
+    expect(deleteRes.body.message).toContain("berhasil");
+  });
+
+  it("GET /api/payments should return 200 for teacher role", async () => {
+    const teacherToken = jwt.sign({ id: 1001, role: "TEACHER" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1001,
+      username: "teacher_payments",
+      email: "teacher_payments@sios.local",
+      role: "TEACHER",
+      password: "hashed",
+    });
+    prismaMock.payment.findMany.mockResolvedValueOnce([]);
+
+    const res = await request(app).get("/api/payments").set("Authorization", `Bearer ${teacherToken}`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  it("POST /api/payments should return 400 for missing required fields", async () => {
+    const adminToken = jwt.sign({ id: 1002, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1002,
+      username: "admin_payment_missing",
+      email: "admin_payment_missing@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+
+    const res = await request(app).post("/api/payments").set("Authorization", `Bearer ${adminToken}`).send({});
+    expect(res.status).toBe(400);
+    expect(res.body.error).toContain("tidak lengkap");
+  });
+
+  it("payments CRUD should work for admin role", async () => {
+    const adminToken = jwt.sign({ id: 1003, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
+
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1003,
+      username: "admin_payment_crud",
+      email: "admin_payment_crud@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+    prismaMock.payment.create.mockResolvedValueOnce({
+      id: 50,
+      studentId: 1,
+      amount: 100000,
+      description: "SPP Januari",
+      dueDate: new Date(),
+      status: "PENDING",
+    });
+    const createRes = await request(app).post("/api/payments").set("Authorization", `Bearer ${adminToken}`).send({
+      studentId: 1,
+      amount: 100000,
+      description: "SPP Januari",
+      dueDate: new Date().toISOString(),
+    });
+    expect(createRes.status).toBe(201);
+    expect(createRes.body.id).toBe(50);
+
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1003,
+      username: "admin_payment_crud",
+      email: "admin_payment_crud@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+    prismaMock.payment.findUnique.mockResolvedValueOnce({
+      id: 50,
+      studentId: 1,
+      amount: 100000,
+      description: "SPP Januari",
+      status: "PENDING",
+    });
+    prismaMock.payment.update.mockResolvedValueOnce({
+      id: 50,
+      studentId: 1,
+      amount: 100000,
+      description: "SPP Januari",
+      status: "PAID",
+      paidAt: new Date(),
+    });
+    const updateRes = await request(app).put("/api/payments/50").set("Authorization", `Bearer ${adminToken}`).send({
+      status: "PAID",
+      paidAt: new Date().toISOString(),
+    });
+    expect(updateRes.status).toBe(200);
+    expect(updateRes.body.status).toBe("PAID");
+
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1003,
+      username: "admin_payment_crud",
+      email: "admin_payment_crud@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+    prismaMock.payment.delete.mockResolvedValueOnce({ id: 50 });
+    const deleteRes = await request(app).delete("/api/payments/50").set("Authorization", `Bearer ${adminToken}`);
     expect(deleteRes.status).toBe(200);
     expect(deleteRes.body.message).toContain("berhasil");
   });
