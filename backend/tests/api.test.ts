@@ -1213,6 +1213,55 @@ describe("API baseline", () => {
     expect(res.body.averageGrade).toBe(90);
   });
 
+  it("GET /api/dashboard/kpis should scope to parent when role is PARENT", async () => {
+    const parentToken = jwt.sign({ id: 1501, role: "PARENT" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1501,
+      username: "parent_kpi",
+      email: "parent_kpi@sios.local",
+      role: "PARENT",
+      password: "hashed",
+    });
+    prismaMock.parent.findUnique.mockResolvedValueOnce({
+      students: [{ id: 10 }, { id: 11 }],
+    });
+    prismaMock.attendance.count.mockResolvedValueOnce(2);
+    prismaMock.attendance.count.mockResolvedValueOnce(1);
+    prismaMock.payment.count.mockResolvedValueOnce(4);
+    prismaMock.payment.count.mockResolvedValueOnce(1);
+    prismaMock.grade.aggregate.mockResolvedValueOnce({ _avg: { score: 82 } });
+
+    const res = await request(app).get("/api/dashboard/kpis").set("Authorization", `Bearer ${parentToken}`);
+    expect(res.status).toBe(200);
+    expect(res.body.totalStudents).toBe(2);
+    expect(res.body.totalPayments).toBe(4);
+    expect(res.body.overduePayments).toBe(1);
+    expect(res.body.averageGrade).toBe(82);
+  });
+
+  it("GET /api/notifications should scope to parent when role is PARENT", async () => {
+    const parentToken = jwt.sign({ id: 1502, role: "PARENT" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1502,
+      username: "parent_notif",
+      email: "parent_notif@sios.local",
+      role: "PARENT",
+      password: "hashed",
+    });
+    prismaMock.parent.findUnique.mockResolvedValueOnce({
+      students: [{ id: 10 }],
+    });
+    prismaMock.payment.count.mockResolvedValueOnce(1);
+    prismaMock.attendance.count.mockResolvedValueOnce(0);
+    prismaMock.grade.count.mockResolvedValueOnce(0);
+
+    const res = await request(app).get("/api/notifications").set("Authorization", `Bearer ${parentToken}`);
+    expect(res.status).toBe(200);
+    expect(res.body.total).toBe(1);
+    expect(Array.isArray(res.body.items)).toBe(true);
+    expect(res.body.items[0].type).toBe("PAYMENT_OVERDUE");
+  });
+
   it("GET /api/payments/student/:id should allow student to view own payments", async () => {
     const studentToken = jwt.sign({ id: 1401, role: "STUDENT" }, process.env.JWT_SECRET || "secret");
     prismaMock.user.findUnique.mockResolvedValueOnce({
