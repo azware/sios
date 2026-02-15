@@ -450,19 +450,19 @@ export default function StudentsPage() {
         <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-gray-600">
           <span>Urutkan:</span>
           <button className="btn-secondary" onClick={() => handleSort('name')}>
-            Nama {sortKey === 'name' ? (sortDir === 'asc' ? '↑' : '↓') : ''}
+            Nama {sortKey === 'name' ? (sortDir === 'asc' ? 'ASC' : 'DESC') : ''}
           </button>
           <button className="btn-secondary" onClick={() => handleSort('nis')}>
-            NIS {sortKey === 'nis' ? (sortDir === 'asc' ? '↑' : '↓') : ''}
+            NIS {sortKey === 'nis' ? (sortDir === 'asc' ? 'ASC' : 'DESC') : ''}
           </button>
           <button className="btn-secondary" onClick={() => handleSort('nisn')}>
-            NISN {sortKey === 'nisn' ? (sortDir === 'asc' ? '↑' : '↓') : ''}
+            NISN {sortKey === 'nisn' ? (sortDir === 'asc' ? 'ASC' : 'DESC') : ''}
           </button>
           <button className="btn-secondary" onClick={() => handleSort('email')}>
-            Email {sortKey === 'email' ? (sortDir === 'asc' ? '↑' : '↓') : ''}
+            Email {sortKey === 'email' ? (sortDir === 'asc' ? 'ASC' : 'DESC') : ''}
           </button>
           <button className="btn-secondary" onClick={() => handleSort('class')}>
-            Kelas {sortKey === 'class' ? (sortDir === 'asc' ? '↑' : '↓') : ''}
+            Kelas {sortKey === 'class' ? (sortDir === 'asc' ? 'ASC' : 'DESC') : ''}
           </button>
           <div className="flex items-center gap-2">
             <span>Per halaman</span>

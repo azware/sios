@@ -57,6 +57,7 @@ export default function OnboardingPage() {
   const [savingSubject, setSavingSubject] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [counts, setCounts] = useState({ schools: 0, classes: 0, subjects: 0 })
 
   const [schools, setSchools] = useState<SchoolOption[]>([])
   const [schoolForm, setSchoolForm] = useState<SchoolForm>(initialSchoolForm)
@@ -67,6 +68,43 @@ export default function OnboardingPage() {
     const selectedId = Number(classForm.schoolId)
     return schools.find((item) => item.id === selectedId)?.name || '-'
   }, [classForm.schoolId, schools])
+
+  const steps: Array<{ key: Step; label: string; title: string; description: string }> = [
+    {
+      key: 'school',
+      label: 'Sekolah',
+      title: 'Langkah 1: Buat Sekolah Pertama',
+      description: 'Tambahkan data sekolah agar struktur data lain bisa mengikuti.',
+    },
+    {
+      key: 'class',
+      label: 'Kelas',
+      title: 'Langkah 2: Buat Kelas Pertama',
+      description: 'Siapkan kelas utama untuk menempatkan siswa.',
+    },
+    {
+      key: 'subject',
+      label: 'Mapel',
+      title: 'Langkah 3: Buat Mata Pelajaran Pertama',
+      description: 'Tambahkan mapel utama untuk penjadwalan dan penilaian.',
+    },
+    {
+      key: 'done',
+      label: 'Selesai',
+      title: 'Setup Awal Selesai',
+      description: 'Lanjutkan manajemen data lainnya.',
+    },
+  ]
+
+  const activeIndex = steps.findIndex((item) => item.key === step)
+  const progressValue = Math.max(0, Math.min(100, ((activeIndex + 1) / steps.length) * 100))
+  const canGoBack = activeIndex > 0
+
+  const goToStep = (target: Step) => {
+    setError('')
+    setSuccess('')
+    setStep(target)
+  }
 
   useEffect(() => {
     const boot = async () => {
@@ -83,6 +121,11 @@ export default function OnboardingPage() {
         const subjectItems: Array<{ id: number }> = Array.isArray(subjectsRes.data) ? subjectsRes.data : []
 
         setSchools(schoolItems)
+        setCounts({
+          schools: schoolItems.length,
+          classes: classItems.length,
+          subjects: subjectItems.length,
+        })
 
         if (schoolItems.length === 0) {
           setStep('school')
@@ -210,8 +253,13 @@ export default function OnboardingPage() {
 
   if (loading) {
     return (
-      <div className="card text-center py-8">
-        <p className="text-gray-600">Memuat data onboarding...</p>
+      <div className="card py-8">
+        <p className="text-gray-600 text-center">Memuat data onboarding...</p>
+        <div className="mt-6 space-y-3">
+          <div className="h-3 bg-gray-100 rounded animate-pulse" />
+          <div className="h-3 bg-gray-100 rounded animate-pulse w-4/5" />
+          <div className="h-3 bg-gray-100 rounded animate-pulse w-3/5" />
+        </div>
       </div>
     )
   }
@@ -226,11 +274,36 @@ export default function OnboardingPage() {
       </div>
 
       <div className="card">
-        <div className="flex items-center gap-3 text-sm">
-          <span className={`px-3 py-1 rounded-full ${step === 'school' ? 'bg-blue-600 text-white' : 'bg-gray-100'}`}>1. Sekolah</span>
-          <span className={`px-3 py-1 rounded-full ${step === 'class' ? 'bg-blue-600 text-white' : 'bg-gray-100'}`}>2. Kelas</span>
-          <span className={`px-3 py-1 rounded-full ${step === 'subject' ? 'bg-blue-600 text-white' : 'bg-gray-100'}`}>3. Mapel</span>
-          <span className={`px-3 py-1 rounded-full ${step === 'done' ? 'bg-green-600 text-white' : 'bg-gray-100'}`}>4. Selesai</span>
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-sm text-gray-500">Progress</p>
+            <div className="flex items-center gap-2 text-sm">
+              {steps.map((item, index) => {
+                const isActive = item.key === step
+                const isDone =
+                  (item.key === 'school' && counts.schools > 0) ||
+                  (item.key === 'class' && counts.classes > 0) ||
+                  (item.key === 'subject' && counts.subjects > 0) ||
+                  item.key === 'done'
+                return (
+                  <span
+                    key={item.key}
+                    className={`px-3 py-1 rounded-full ${isActive ? 'bg-blue-600 text-white' : isDone ? 'bg-green-100 text-green-700' : 'bg-gray-100'}`}
+                  >
+                    {index + 1}. {item.label}
+                  </span>
+                )
+              })}
+            </div>
+          </div>
+          <div className="w-full md:w-56">
+            <div className="h-2 w-full bg-gray-100 rounded">
+              <div className="h-2 bg-blue-600 rounded" style={{ width: `${progressValue}%` }} />
+            </div>
+            <p className="text-xs text-gray-500 mt-1">
+              {activeIndex + 1} dari {steps.length} langkah
+            </p>
+          </div>
         </div>
       </div>
 
@@ -239,7 +312,10 @@ export default function OnboardingPage() {
 
       {step === 'school' && (
         <form onSubmit={handleCreateSchool} className="card space-y-4">
-          <h2 className="text-xl font-semibold text-gray-900">Langkah 1: Buat Sekolah Pertama</h2>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900">{steps[0].title}</h2>
+            <p className="text-sm text-gray-600">{steps[0].description}</p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Nama Sekolah *</label>
@@ -284,12 +360,26 @@ export default function OnboardingPage() {
           <button type="submit" className="btn-primary" disabled={savingSchool}>
             {savingSchool ? 'Menyimpan...' : 'Simpan Sekolah'}
           </button>
+          <div className="flex items-center justify-between text-sm text-gray-500">
+            <span>Sudah punya sekolah? Lewati onboarding kapan saja.</span>
+            <Link href="/dashboard" className="text-blue-600 hover:text-blue-800">
+              Lewati &amp; kembali
+            </Link>
+          </div>
         </form>
       )}
 
       {step === 'class' && (
         <form onSubmit={handleCreateClass} className="card space-y-4">
-          <h2 className="text-xl font-semibold text-gray-900">Langkah 2: Buat Kelas Pertama</h2>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900">{steps[1].title}</h2>
+            <p className="text-sm text-gray-600">{steps[1].description}</p>
+          </div>
+          {schools.length === 0 && (
+            <div className="rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
+              Anda belum memiliki sekolah. Buat sekolah terlebih dahulu untuk melanjutkan.
+            </div>
+          )}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Nama Kelas *</label>
@@ -334,15 +424,28 @@ export default function OnboardingPage() {
           <p className="text-sm text-gray-600">
             Kelas ini akan dibuat untuk sekolah: <span className="font-medium">{selectedSchoolName}</span>
           </p>
-          <button type="submit" className="btn-primary" disabled={savingClass}>
-            {savingClass ? 'Menyimpan...' : 'Simpan Kelas'}
-          </button>
+          <div className="flex flex-wrap items-center gap-3">
+            <button type="submit" className="btn-primary" disabled={savingClass || schools.length === 0}>
+              {savingClass ? 'Menyimpan...' : schools.length === 0 ? 'Tambah Sekolah Dulu' : 'Simpan Kelas'}
+            </button>
+            {canGoBack && (
+              <button type="button" className="btn-secondary" onClick={() => goToStep('school')}>
+                Kembali
+              </button>
+            )}
+            <Link href="/dashboard" className="text-sm text-blue-600 hover:text-blue-800">
+              Lewati &amp; kembali
+            </Link>
+          </div>
         </form>
       )}
 
       {step === 'subject' && (
         <form onSubmit={handleCreateSubject} className="card space-y-4">
-          <h2 className="text-xl font-semibold text-gray-900">Langkah 3: Buat Mata Pelajaran Pertama</h2>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900">{steps[2].title}</h2>
+            <p className="text-sm text-gray-600">{steps[2].description}</p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Kode *</label>
@@ -380,15 +483,44 @@ export default function OnboardingPage() {
           <button type="submit" className="btn-primary" disabled={savingSubject}>
             {savingSubject ? 'Menyimpan...' : 'Simpan Mata Pelajaran'}
           </button>
+          <div className="flex flex-wrap items-center gap-3">
+            {canGoBack && (
+              <button type="button" className="btn-secondary" onClick={() => goToStep('class')}>
+                Kembali
+              </button>
+            )}
+            <Link href="/dashboard" className="text-sm text-blue-600 hover:text-blue-800">
+              Lewati &amp; kembali
+            </Link>
+          </div>
         </form>
       )}
 
       {step === 'done' && (
         <div className="card space-y-4">
-          <h2 className="text-xl font-semibold text-gray-900">Setup Awal Selesai</h2>
-          <p className="text-gray-700">
-            Data dasar sekolah, kelas, dan mata pelajaran sudah tersedia. Anda bisa lanjut ke manajemen data lainnya.
-          </p>
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900">{steps[3].title}</h2>
+            <p className="text-gray-700">{steps[3].description}</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="rounded-lg border border-gray-200 px-4 py-3">
+              <p className="text-sm text-gray-500">Sekolah</p>
+              <p className="text-2xl font-semibold text-gray-900">{counts.schools}</p>
+            </div>
+            <div className="rounded-lg border border-gray-200 px-4 py-3">
+              <p className="text-sm text-gray-500">Kelas</p>
+              <p className="text-2xl font-semibold text-gray-900">{counts.classes}</p>
+            </div>
+            <div className="rounded-lg border border-gray-200 px-4 py-3">
+              <p className="text-sm text-gray-500">Mapel</p>
+              <p className="text-2xl font-semibold text-gray-900">{counts.subjects}</p>
+            </div>
+          </div>
+          {(counts.schools === 0 || counts.classes === 0 || counts.subjects === 0) && (
+            <div className="rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
+              Setup belum lengkap. Anda bisa menambahkan data yang masih kosong kapan saja dari menu dashboard.
+            </div>
+          )}
           <div className="flex flex-wrap gap-3">
             <Link href="/dashboard/students/new" className="btn-primary">
               Tambah Siswa
@@ -399,6 +531,12 @@ export default function OnboardingPage() {
             <Link href="/dashboard/subjects" className="btn-secondary">
               Lihat Mata Pelajaran
             </Link>
+            <button type="button" className="btn-secondary" onClick={() => goToStep('class')}>
+              Tambah Kelas Lagi
+            </button>
+            <button type="button" className="btn-secondary" onClick={() => goToStep('subject')}>
+              Tambah Mapel Lagi
+            </button>
           </div>
         </div>
       )}
