@@ -18,6 +18,7 @@ const { prismaMock } = vi.hoisted(() => ({
       create: vi.fn(),
       update: vi.fn(),
       delete: vi.fn(),
+      count: vi.fn(),
     },
     teacher: {
       findMany: vi.fn(),
@@ -26,12 +27,14 @@ const { prismaMock } = vi.hoisted(() => ({
       create: vi.fn(),
       update: vi.fn(),
       delete: vi.fn(),
+      count: vi.fn(),
     },
     class: {
       findMany: vi.fn(),
       create: vi.fn(),
       update: vi.fn(),
       delete: vi.fn(),
+      count: vi.fn(),
     },
     payment: {
       findMany: vi.fn(),
@@ -39,15 +42,20 @@ const { prismaMock } = vi.hoisted(() => ({
       create: vi.fn(),
       update: vi.fn(),
       delete: vi.fn(),
+      count: vi.fn(),
     },
     attendance: {
       findMany: vi.fn(),
       create: vi.fn(),
       update: vi.fn(),
       delete: vi.fn(),
+      count: vi.fn(),
     },
     schedule: {
       findFirst: vi.fn(),
+    },
+    parent: {
+      findUnique: vi.fn(),
     },
     grade: {
       findMany: vi.fn(),
@@ -56,6 +64,7 @@ const { prismaMock } = vi.hoisted(() => ({
       update: vi.fn(),
       delete: vi.fn(),
       aggregate: vi.fn(),
+      count: vi.fn(),
     },
     subject: {
       findMany: vi.fn(),
@@ -1129,5 +1138,78 @@ describe("API baseline", () => {
     const deleteRes = await request(app).delete("/api/attendance/70").set("Authorization", `Bearer ${adminToken}`);
     expect(deleteRes.status).toBe(200);
     expect(deleteRes.body.message).toContain("berhasil");
+  });
+
+  it("GET /api/dashboard/kpis should return admin aggregates", async () => {
+    const adminToken = jwt.sign({ id: 1301, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1301,
+      username: "admin_kpi",
+      email: "admin_kpi@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+    prismaMock.student.count.mockResolvedValueOnce(10);
+    prismaMock.teacher.count.mockResolvedValueOnce(5);
+    prismaMock.class.count.mockResolvedValueOnce(3);
+    prismaMock.payment.count.mockResolvedValueOnce(7);
+    prismaMock.attendance.count.mockResolvedValueOnce(4);
+    prismaMock.attendance.count.mockResolvedValueOnce(3);
+    prismaMock.payment.count.mockResolvedValueOnce(2);
+    prismaMock.grade.aggregate.mockResolvedValueOnce({ _avg: { score: 88.5 } });
+
+    const res = await request(app).get("/api/dashboard/kpis").set("Authorization", `Bearer ${adminToken}`);
+    expect(res.status).toBe(200);
+    expect(res.body.totalStudents).toBe(10);
+    expect(res.body.totalTeachers).toBe(5);
+    expect(res.body.totalClasses).toBe(3);
+    expect(res.body.totalPayments).toBe(7);
+    expect(res.body.attendanceRateToday).toBeCloseTo(75, 5);
+    expect(res.body.overduePayments).toBe(2);
+    expect(res.body.averageGrade).toBe(88.5);
+  });
+
+  it("GET /api/notifications should return items for admin", async () => {
+    const adminToken = jwt.sign({ id: 1302, role: "ADMIN" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1302,
+      username: "admin_notif",
+      email: "admin_notif@sios.local",
+      role: "ADMIN",
+      password: "hashed",
+    });
+    prismaMock.payment.count.mockResolvedValueOnce(2);
+    prismaMock.attendance.count.mockResolvedValueOnce(1);
+    prismaMock.grade.count.mockResolvedValueOnce(3);
+
+    const res = await request(app).get("/api/notifications").set("Authorization", `Bearer ${adminToken}`);
+    expect(res.status).toBe(200);
+    expect(res.body.total).toBe(3);
+    expect(Array.isArray(res.body.items)).toBe(true);
+    expect(res.body.items.length).toBe(3);
+  });
+
+  it("GET /api/dashboard/kpis should scope to student when role is STUDENT", async () => {
+    const studentToken = jwt.sign({ id: 1303, role: "STUDENT" }, process.env.JWT_SECRET || "secret");
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: 1303,
+      username: "student_kpi",
+      email: "student_kpi@sios.local",
+      role: "STUDENT",
+      password: "hashed",
+    });
+    prismaMock.student.findUnique.mockResolvedValueOnce({ id: 77, userId: 1303 });
+    prismaMock.attendance.count.mockResolvedValueOnce(1);
+    prismaMock.attendance.count.mockResolvedValueOnce(1);
+    prismaMock.payment.count.mockResolvedValueOnce(5);
+    prismaMock.payment.count.mockResolvedValueOnce(1);
+    prismaMock.grade.aggregate.mockResolvedValueOnce({ _avg: { score: 90 } });
+
+    const res = await request(app).get("/api/dashboard/kpis").set("Authorization", `Bearer ${studentToken}`);
+    expect(res.status).toBe(200);
+    expect(res.body.totalStudents).toBe(1);
+    expect(res.body.totalPayments).toBe(5);
+    expect(res.body.overduePayments).toBe(1);
+    expect(res.body.averageGrade).toBe(90);
   });
 });
